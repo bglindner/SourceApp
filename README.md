@@ -20,7 +20,7 @@ database of reference genomes with known source-associations. Consequently,
 a database was developed in parallel with this software through systematic 
 literature review and should be downloaded for use at: <URL>
 
-SourceApp reports metrics akin to prokaryotic cell fraction and has been bench-
+SourceApp reports metrics akin to prokaryotic cell fraction and has been bench
 marked in laboratory trials. SourceApp was found to perform best when fecal signal 
 is relatively fresh and when the user is able to provide supplementary reference 
 genomes to bolster SourceApp's default genomic reference database. De novo 
