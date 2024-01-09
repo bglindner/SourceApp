@@ -32,24 +32,17 @@ Those finding SourceApp useful are encouraged to also cite these excellent works
     
 ::MicrobeCensus::
 
-    Nayfach, S.; Pollard, K. S. Average Genome Size Estimation Improves 
-Comparative Metagenomics and Sheds Light on the Functional Ecology of the Human 
-Microbiome. Genome Biology 2015, 16 (1), 51. 
-https://doi.org/10.1186/s13059-015-0611-7.
+Nayfach, S.; Pollard, K. S. Average Genome Size Estimation Improves Comparative Metagenomics and Sheds Light on the Functional Ecology of the Human Microbiome. Genome Biology 2015, 16 (1), 51. https://doi.org/10.1186/s13059-015-0611-7.
 
 ::BWA-MEM2::
 
-    Vasimuddin, Md.; Misra, S.; Li, H.; Aluru, S. Efficient Architecture-Aware 
-Acceleration of BWA-MEM for Multicore Systems. In 2019 IEEE International Parallel 
-and Distributed Processing Symposium (IPDPS); 2019; pp 314–324. 
-https://doi.org/10.1109/IPDPS.2019.00041.
+Vasimuddin, Md.; Misra, S.; Li, H.; Aluru, S. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. In 2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS); 2019; pp 314–324. https://doi.org/10.1109/IPDPS.2019.00041.
 
 ::Fastp::
 
-    Chen, S. Ultrafast One‐pass FASTQ Data Preprocessing, Quality Control, and 
-Deduplication Using Fastp. iMeta 2023, 2 (2), e107. 
-https://doi.org/10.1002/imt2.107.
+Chen, S. Ultrafast One‐pass FASTQ Data Preprocessing, Quality Control, and Deduplication Using Fastp. iMeta 2023, 2 (2), e107. https://doi.org/10.1002/imt2.107.
 
 ::CoverM::
 
-    Woodcroft, B. https://github.com/wwood/CoverM
+Woodcroft, B. https://github.com/wwood/CoverM
+
