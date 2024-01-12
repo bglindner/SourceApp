@@ -27,6 +27,12 @@ genomes to bolster SourceApp's default genomic reference database. De novo
 databases can be constructed by the user using sourceapp_build.py and then 
 supplied here to SourceApp in place of the default database. 
 
+# Usage
+
+Forthcoming
+
+# Citations
+
 SourceApp wraps several essential pieces of software developed by other teams. 
 Those finding SourceApp useful are encouraged to also cite these excellent works:
     
