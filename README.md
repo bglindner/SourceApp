@@ -7,7 +7,7 @@
 
 Python implementation of the Unix-based environmental monitoring tool.
 
-# SourceApp is still in active development. Check back here for updates and the eventual release. 
+*SourceApp is still in active development. Check back here for updates and the eventual release.*
 
 # Description 
 SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst
@@ -33,8 +33,20 @@ For functional population proportioning in biological wastewater treatment datas
 
 # Installation
 
-In prep
+The development version of SourceApp is available here for those interested in testing the software before its publication. It is anticipated that at the time of publication, we will create and maintain a Bioconda recipe for direct installation with `conda` or `mamba`. In the interim, we suggest the following for obtaining a working version of the tool:
+```
+# clone this repo
+git clone
 
+# create two environments using the provided .yml files, one supporting the dependencies for "sourceapp.py" and the other for "sourceapp_build.py"
+mamba create -n sourceapp
+mamba env update -n sourceapp --file SourceApp/sourceapp.yml
+mamba create -n sourceapp_build
+mamba env update -n sourceapp_build --file SourceApp/sourceapp_build.yml
+
+# when calling sourceappy.py or sourceapp_build.py, be sure to activate the environment corresponding to your task:
+
+```
 # Usage
 
 In prep
