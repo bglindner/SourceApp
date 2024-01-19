@@ -38,13 +38,15 @@ The development version of SourceApp is available here for those interested in t
 # clone this repo
 git clone https://github.com/blindner6/SourceApp.git
 
-# create two environments using the provided .yml files, one supporting the dependencies for "sourceapp.py" and the other for "sourceapp_build.py"
+# create two environments using the provided .yml files, one supporting the 
+# dependencies for "sourceapp.py" and the other for "sourceapp_build.py"
 mamba create -n sourceapp
 mamba env update -n sourceapp --file SourceApp/sourceapp.yml
 mamba create -n sourceapp_build
 mamba env update -n sourceapp_build --file SourceApp/sourceapp_build.yml
 
-# when calling sourceappy.py or sourceapp_build.py, be sure to activate the environment corresponding to your task:
+# when calling sourceappy.py or sourceapp_build.py, be sure to activate the 
+# environment corresponding to your task:
 
 ```
 # Usage
