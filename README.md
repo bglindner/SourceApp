@@ -109,3 +109,10 @@ Chen, S. Ultrafast One‐pass FASTQ Data Preprocessing, Quality Control, and Ded
 
 Woodcroft, B. https://github.com/wwood/CoverM
 
+### CheckM2
+
+Chklovski, A.; Parks, D. H.; Woodcroft, B. J.; Tyson, G. W. CheckM2: A Rapid, Scalable and Accurate Tool for Assessing Microbial Genome Quality Using Machine Learning. Nat Methods 2023, 20 (8), 1203–1212. https://doi.org/10.1038/s41592-023-01940-w.
+
+### dRep
+
+Olm, M. R.; Brown, C. T.; Brooks, B.; Banfield, J. F. dRep: A Tool for Fast and Accurate Genomic Comparisons That Enables Improved Genome Recovery from Metagenomes through de-Replication. ISME J 2017, 11 (12), 2864–2868. https://doi.org/10.1038/ismej.2017.126.
