@@ -20,7 +20,7 @@ signal in metagenomes collected from the water environment if users will simply
 provide gzipped copies of the raw reads in FASTQ format. SourceApp requires a
 database of reference genomes with known source-associations. Consequently,
 a database was developed in parallel with this software through systematic 
-literature review and should be downloaded for use at: <URL>
+literature review and will be made available upon completion of that work (Graham et al, _in prep_)
 
 SourceApp reports metrics akin to prokaryotic cell fraction and has been bench
 marked in laboratory trials. SourceApp was found to perform best when fecal signal 
