@@ -52,7 +52,9 @@ python sourceapp.py -h
 ```
 # Usage
 
-`sourceapp.py` expects as input paired short read metagenomic data. The user should supply these reads as gzipped FASTQ files. No prior adapter trimming or QC is necessary as SourceApp will automate read trimming with `fastp` but the user can disable this step if they would like to perform it themselves with `--skip-trimming`. In addition to short reads, SourceApp needs a genomic database specifically formatted for use by the tool. This can be created by SourceApp from genomes provided by the user with `sourceapp_build.py` or a default database will be provided in a forthcoming publication (Graham et al, _in prep_).
+`sourceapp.py` expects as input paired short read metagenomic data. The user should supply these reads as gzipped FASTQ files. No prior adapter trimming or QC is necessary as SourceApp will automate read trimming with `fastp` but the user can disable this step if they would like to perform it themselves with `--skip-trimming`. In addition to short reads, SourceApp needs a genomic database specifically formatted for use by the tool. This can be created by SourceApp from genomes provided by the user with `sourceapp_build.py` or a default database will be provided in a forthcoming publication (Graham et al, _in prep_). Users should specify the location of an output directory for results to be written to. 
+
+SourceApp is primarily designed for use with a Unix-based HPC and no support is offered for deployment with alternative operating systems.
 
 ```
 usage: sourceapp.py [-h] -i  -o  -d  [-l] [-r] [-q] [-t] [--use-geq] [--no-limits] [--skip-trimming]
@@ -60,9 +62,9 @@ usage: sourceapp.py [-h] -i  -o  -d  [-l] [-r] [-q] [-t] [--use-geq] [--no-limit
 SourceApp: Python implementation of the Unix-based environmental monitoring tool.
 
 options:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   -i , --input-files    Comma-delimited path to forward and reverse metagenomic reads. Must 
-                        be in FASTQ format and compressed with gzip
+                        be in FASTQ format and gzipped (reads.1.fastq.gz,reads.2.fastq.gz)
   -o , --output-dir     Path to the desired output directory
   -d , --sourceapp-database 
                         Path to directory containing a SourceApp formatted database. Default 
@@ -78,7 +80,7 @@ options:
   -q , --query-coverage 
                         Minimum fraction of read covered by an alignment between read and reference 
                         genome (float; default 0.7)
-  -t , --threads        Threads available to SourceApp
+  -t , --threads        Threads available to SourceApp and its subroutines
   --use-geq             Report results normalized to genome equivalents
   --no-limits           Disable the analytical limit of detection used in estimating sequence depth.   
                         Synonymous with -l 0
