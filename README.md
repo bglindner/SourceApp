@@ -45,8 +45,9 @@ mamba env update -n sourceapp --file SourceApp/sourceapp.yml
 mamba create -n sourceapp_build
 mamba env update -n sourceapp_build --file SourceApp/sourceapp_build.yml
 
-# when calling sourceappy.py or sourceapp_build.py, be sure to activate the 
-# environment corresponding to your task:
+# test your installation:
+micromamba activate sourceapp
+python sourceapp.py -h
 
 ```
 # Usage
