@@ -51,8 +51,29 @@ python sourceapp.py -h
 
 ```
 # Usage
+```
+usage: sourceapp.py [-h] -i  -o  -d  [-l] [-r] [-q] [-t] [--use-geq] [--no-limits] [--skip-trimming]
 
-In prep
+SourceApp: Python implementation of the Unix-based environmental monitoring tool.
+
+options:
+  -h, --help            show this help message and exit
+  -i , --input-files    Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip
+  -o , --output-dir     Path to the desired output directory
+  -d , --sourceapp-database 
+                        Path to directory containing a SourceApp formatted database. Default database available for download or produced de novo as the output
+                        directory from sourceapp_build.py
+  -l , --limit-threshold 
+                        Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value
+                        will increase false positive rate (float; default 0.1)
+  -r , --percent-identity 
+                        Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.95)
+  -q , --query-coverage 
+                        Minimum fraction of read covered by an alignment between read and reference genome (float; default 0.7)
+  -t , --threads        Threads available to SourceApp
+  --use-geq             Report results normalized to genome equivalents
+  --no-limits           Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0
+  --skip-trimming       Disable read trimming and QC```
 
 # Citations
 
