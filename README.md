@@ -75,6 +75,8 @@ options:
   --no-limits           Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0
   --skip-trimming       Disable read trimming and QC```
 
+```
+
 # Citations
 
 SourceApp wraps several essential pieces of software developed by other teams. 
