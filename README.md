@@ -36,7 +36,7 @@ For functional population proportioning in biological wastewater treatment datas
 The development version of SourceApp is available here for those interested in testing the software before its publication. It is anticipated that at the time of publication, we will create and maintain a Bioconda recipe for direct installation with `conda` or `mamba`. In the interim, we suggest the following for obtaining a working version of the tool:
 ```
 # clone this repo
-git clone
+git clone https://github.com/blindner6/SourceApp.git
 
 # create two environments using the provided .yml files, one supporting the dependencies for "sourceapp.py" and the other for "sourceapp_build.py"
 mamba create -n sourceapp
