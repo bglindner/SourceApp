@@ -7,6 +7,8 @@
 
 Python implementation of the Unix-based environmental monitoring tool.
 
+# SourceApp is still in active development. Check back here for updates and the eventual release. 
+
 # Description 
 SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst
 multiple competing sources in short read metagenomes collected from impaired 
