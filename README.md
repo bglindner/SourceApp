@@ -29,7 +29,7 @@ genomes to bolster SourceApp's default genomic reference database. De novo
 databases can be constructed by the user using sourceapp_build.py and then 
 supplied here to SourceApp in place of the default database. 
 
-For functional population proportioning in biological wastewater treatment datasets, see "WasteApp" -- the built envrionment extension of the principles behind SourceApp (https://github.com/blindner6/WasteApp). 
+For functional population proportioning in biological wastewater treatment datasets, see "WasteApp" -- the built envrionment extension of SourceApp's working principles (https://github.com/blindner6/WasteApp). 
 
 # Installation
 
