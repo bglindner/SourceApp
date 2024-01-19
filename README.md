@@ -10,24 +10,11 @@ Python implementation of the Unix-based environmental monitoring tool.
 SourceApp is still in active development. Check back here for updates and the eventual release.
 
 # Description 
-SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst
-multiple competing sources in short read metagenomes collected from impaired 
-waterways. SourceApp was developed for use on Unix or Unix-like operating systems
-and its implementation in Python has the same requirement.
+SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst multiple competing sources in short read metagenomes collected from impaired waterways. SourceApp was developed for use on Unix or Unix-like operating systemsand its implementation in Python has the same requirement.
 
-SourceApp is designed to automate all tasks necessary to detect and quantify fecal
-signal in metagenomes collected from the water environment if users will simply 
-provide gzipped copies of the raw reads in FASTQ format. SourceApp requires a
-database of reference genomes with known source-associations. Consequently,
-a database was developed in parallel with this software through systematic 
-literature review and will be made available upon completion of that work (Graham et al, _in prep_)
+SourceApp is designed to automate all tasks necessary to detect and quantify fecal signal in metagenomes collected from the water environment if users will simply provide gzipped copies of the raw reads in FASTQ format. SourceApp requires adatabase of reference genomes with known source-associations. Consequently, a database was developed in parallel with this software through systematic literature review and will be made available upon completion of that work (Graham et al, _in prep_)
 
-SourceApp reports metrics akin to prokaryotic cell fraction and has been bench
-marked in laboratory trials. SourceApp was found to perform best when fecal signal 
-is relatively fresh and when the user is able to provide supplementary reference 
-genomes to bolster SourceApp's default genomic reference database. De novo 
-databases can be constructed by the user using sourceapp_build.py and then 
-supplied here to SourceApp in place of the default database. 
+SourceApp reports metrics akin to prokaryotic cell fraction and has been benchmarked in laboratory trials. SourceApp was found to perform best when fecal signal is relatively fresh and when the user is able to provide supplementary reference genomes to bolster SourceApp's default genomic reference database. De novo databases can be constructed by the user using sourceapp_build.py and then supplied here to SourceApp in place of the default database. 
 
 For functional population proportioning in biological wastewater treatment datasets, see "WasteApp" -- the built envrionment extension of SourceApp's working principles (https://github.com/blindner6/WasteApp). 
 
