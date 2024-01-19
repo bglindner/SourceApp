@@ -73,7 +73,7 @@ options:
   -t , --threads        Threads available to SourceApp
   --use-geq             Report results normalized to genome equivalents
   --no-limits           Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0
-  --skip-trimming       Disable read trimming and QC```
+  --skip-trimming       Disable read trimming and QC
 
 ```
 
