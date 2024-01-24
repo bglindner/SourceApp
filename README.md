@@ -75,6 +75,36 @@ options:
 
 ```
 
+# Database construction
+
+```
+usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--remove-crx] [--no-dereplication]
+
+SourceApp: Python implementation of the Unix-based environmental monitoring tool.
+
+sourceapp.py requires a database directory that is properly configured:
+
+SourceApp_db:
+  database      # bwamem2 index of a concatenated FASTA file of input genomes
+  gdef.tsv      # TSV, the name of the genome each contig came from in "database" ['genome', 'contig_name']
+  sources.txt   # TSV, the name of each genome and its associated source ['genome', 'source']
+
+options:
+  -h, --help            show this help message and exit
+  -i , --input-dir      Path to directory containing input genomes
+  -o , --output-name    Name of the database to be created. SourceApp will create an output directory in the current working
+                        directory containing the finished database with the provided string + "_SourceAppdb/"
+  -s , --source-associations 
+                        Text file describing source associations of input genomes
+  -a , --ani            ANI threshold for calling genome clusters
+  -t , --threads        Threads available to SourceApp
+  -q , --genome-quality 
+                        Aggregate quality score threshold for accepting input genomes
+  --remove-crx          Remove genomes found in the same cluster but belonging to different sources
+  --no-dereplication    Disable genome dereplication. This will create the database using all of the provided genomes which pass
+                        quality requirements.
+```
+
 # Citations
 
 SourceApp wraps several essential pieces of software developed by other teams. 
