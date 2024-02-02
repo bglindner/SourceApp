@@ -21,8 +21,8 @@ def read_trim(args):
         outdir = args['output_dir']
         html = args['output_dir'] + '/fastp_summary.html'
         json = args['output_dir'] + '/fastp_summary.json'
-    out1=outdir+'/reads.1.fastq.gz'
-    out2=outdir+'/reads.2.fastq.gz'
+    out1=outdir+'/reads.1.fastq'
+    out2=outdir+'/reads.2.fastq'
     threads=args['threads']
     skiptrim=args['skip_trimming']
     if skiptrim:
@@ -43,15 +43,15 @@ def geq_estimation(args):
         outdir = args['output_dir'][:-1]
     else:
         outdir = args['output_dir']
-    fwd=outdir+'/reads.1.fastq.gz'
-    rev=outdir+'/reads.2.fastq.gz'
+    fwd=outdir+'/reads.1.fastq'
+    rev=outdir+'/reads.2.fastq'
     inputs=fwd + ',' + rev
     outputs=outdir+'/geq.txt'
     usegeq=args['use_geq']
     if usegeq:
         print("Running GEQ estimation...")
         try:
-            subprocess.run(["run_microbe_census.py -t "+ str(threads) + " -n 1000000 -q 10 "+ inputs + ' ' + outputs], shell=True, check=True)
+            subprocess.run(["run_microbe_census.py -v -t "+ threads + " -n 100000000 "+ inputs + ' ' + outputs], shell=True, check=True)
         except Exception as e:
             print('Error in step 2: GEQ estimation. Exiting . . .')
             sys.exit()
@@ -67,14 +67,14 @@ def read_map(args):
         output = args['output_dir'][:-1] + '/mappings.bam'
     else:
         output = args['output_dir'] + '/mappings.bam'
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
+    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         database = args['sourceapp_database'][:-1] + '/database' # this is the prefix created by sourceapp_build.py when indexing
     else:
         database = args['sourceapp_database'] + '/database'
     print("Running read mapping...")
     print("This can take a while.")
     try:
-        subprocess.run(["bwa-mem2 mem -t " + str(threads) + ' ' + database + ' ' + fwd + ' ' + rev + " | samtools sort "+ samthreads + " -o " + output + " -"], shell=True, check=True)
+        subprocess.run(["bwa mem -t " + str(threads) + ' ' + database + ' ' + fwd + ' ' + rev + " | samtools sort "+ samthreads + " -o " + output + " -"], shell=True, check=True)
     except Exception as e:
         print('Error in step 3: read mapping. Exiting . . .')
         sys.exit()
@@ -85,7 +85,7 @@ def read_filter(args):
         bam = args['output_dir'][:-1] + '/mappings.bam'
     else:
         bam = args['output_dir'] + '/mappings.bam'
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
+    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         gdef = args['sourceapp_database'][:-1] + '/gdef.txt' # this is a file describing which contigs belong to each genome as prepared by sourceapp_build.py
     else:
         gdef = args['sourceapp_database'] + '/gdef.txt'
