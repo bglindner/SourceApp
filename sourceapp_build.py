@@ -42,7 +42,7 @@ def genome_derep(args):
         ginfo=1
         copy_ginfo=1
         subprocess.call(['cp',copy_dir,output_dir])
-        subprocess.call(['cp'ginfo,copy_ginfo])
+        subprocess.call(['cp',ginfo,copy_ginfo])
 
 def genome_selection(args):
     # toss out bad genomes
@@ -71,8 +71,9 @@ def genome_selection(args):
             genome = good_df['name'].iloc[row]
             subprocess.call(['cp',input_dir,genome,output_dir])
     else:
-        # if we do care about crx, then remove all genomes in the cinfo object and proceed
+        print('Removing cross reactive genomes')# if we do care about crx, then remove all genomes in the cinfo object and proceed
         ### finish me!
+
 def build_database(args):
     cinfo=1
     sinfo=1
@@ -133,14 +134,6 @@ def main():
         required=False
         )
     parser.add_argument(
-        '-m','--memory',
-        help='Memory available to SourceApp (in gigabytes)',
-        metavar='',
-        type=int,
-        default=32,
-        required=False
-        )
-    parser.add_argument(
         '-q','--genome-quality',
         help='Aggregate quality score threshold for accepting input genomes',
         metavar='',
@@ -152,7 +145,6 @@ def main():
         '--remove-crx',
         help='Remove genomes found in the same cluster but belonging to different\
              sources',
-        metavar='',
         action='store_true',
         required=False
         )
@@ -160,7 +152,6 @@ def main():
         '--no-dereplication',
         help='Disable genome dereplication. This will create the database using all\
             of the provided genomes which pass quality requirements.',
-        metavar='',
         action='store_true',
         required=False
         )
@@ -169,10 +160,10 @@ def main():
     # accession
 
     # read in the genomes from their input directory
-    genome_qc(args)
+    #genome_qc(args)
     # checkm2 outputs "quality_report.tsv" in the output_dir which is our ginfo:
-    file=args['output-name'] + '_SourceAppdb/quality_report.tsv'
-    df = read.csv(file, sep='\t') # we need to create a new file, comma-delimited with just header "genome,completeness,contamination" for dRep to read it properly.
+    #file=args['output-name'] + '_SourceAppdb/quality_report.tsv'
+    #df = read.csv(file, sep='\t') # we need to create a new file, comma-delimited with just header "genome,completeness,contamination" for dRep to read it properly.
     # so that means we need to strip off everything after the first 1-3 columns in the current output ("file") which we're reading in to pandas to manipulate.
     # we also need to give it a new header and replace tsv for csv. We'll do this when we write.
     #####
