@@ -121,7 +121,7 @@ def build_database(args):
 
     # index
     try:
-        subprocess.run(["bwa-mem2 index -p database " + output_dir + "/database.fna"],shell=True,check=True)
+        subprocess.run(["bwa-mem2 index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
     except Exception as e:
         print("Error in step 4")
         print(e)
