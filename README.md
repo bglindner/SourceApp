@@ -30,7 +30,7 @@ git clone https://github.com/blindner6/SourceApp.git
 mamba create -n sourceapp --file path/to/SourceApp/dependencies/sourceapp.yml
 mamba create -n sourceapp_build --file path/to/SourceApp/dependencies/sourceapp_build.yml
 
-# pip install one dependency
+# pip install one additional dependency
 mamba activate sourceapp
 pip install MicrobeCensus-SourceApp
 
