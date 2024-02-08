@@ -230,7 +230,11 @@ def main():
     print("SourceApp_build was called with the following arguments:")
     print(args)
 
-    output_dir = args["output_name"] + "_SourceAppdb"
+    if args['output_name'][-1] == "/":
+        args['output_name'] = args["output_name"][:-1] + "_SourceAppdb"
+    else:
+        args['output_name'] = args["output_name"] + "_SourceAppdb"
+    
     subprocess.call(["mkdir " + output_dir], shell=True)
 
     if not args["checkm2_info"]:
