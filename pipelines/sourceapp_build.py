@@ -21,7 +21,7 @@ def genome_qc(args):
     input_dir = args["input_dir"]
     output_dir = args["output_name"] + "_SourceAppdb"
     try:
-        subprocess.run(["checkm2 predict --threads " + str(threads) + " --input " + input_dir + " --output-directory " + output_dir + "/checkm2"], shell=True)
+        subprocess.run(["checkm2 predict --threads " + str(threads) + " --input " + input_dir + " --output-directory " + output_dir + "/checkm2"], shell=True,check=True)
     except Exception as e:
         print("Error in step 01")
         print(e)
@@ -66,8 +66,8 @@ def genome_derep(args):
             sdf.iloc[:, 0] = input_dir + "/" + sdf.iloc[:, 0]
             sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
             try:
-                subprocess.call(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + 
-                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True)
+                subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + 
+                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True)
             except Exception as e:
                 print("Error in step 3")
                 print(e)
@@ -75,7 +75,7 @@ def genome_derep(args):
             ######################################################################################################################
             ### Warning this behavior is not complete yet! We need to have it remove ANY genome inside a dRep primary cluster. ###
             ######################################################################################################################
-            subprocess.call(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True)
+            subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
         else:  # dereplicate WITHIN sources
             for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
                 print("Processing genomes tagged with source: " + source)
@@ -83,56 +83,55 @@ def genome_derep(args):
                 source_df.iloc[:] = input_dir + "/" + source_df.iloc[:]
                 source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
                 try:
-                    subprocess.call(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt" +
-                                        " --S_ani " + str(ani) + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True)
+                    subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt" +
+                                        " --S_ani " + str(ani) + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True)
                 except Exception as e:
                     print("Error in step 3")
                     print(e)
                     sys.exit()
             print("Collecting non-redundant genome set")
-            subprocess.call(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],
-                            shell=True)
+            subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],
+                            shell=True,check=True)
 
     # collect representative genomes and rename them
-    subprocess.call(["for genome in " + output_dir + "/final_genomes/*.fna; do sampleid=$(basename ${genome} | rev | cut -f 2- -d '.' | rev);" 
-                    "seqtk rename ${genome} ${sampleid}. > ${genome}.new; done"],shell=True)
-    subprocess.call(["for genome in " + output_dir + "/final_genomes/*.new; do sampleid=$(echo ${genome} | rev | cut -f 2- -d '.' | rev);"
-                     "mv ${genome} ${sampleid}; done"],shell=True)
+    subprocess.run(["for genome in " + output_dir + "/final_genomes/*.fna; do sampleid=$(basename ${genome} | rev | cut -f 2- -d '.' | rev);" 
+                    "seqtk rename ${genome} ${sampleid}. > ${genome}.new; done"],shell=True,check=True)
+    subprocess.run(["for genome in " + output_dir + "/final_genomes/*.new; do sampleid=$(echo ${genome} | rev | cut -f 2- -d '.' | rev);"
+                     "mv ${genome} ${sampleid}; done"],shell=True,check=True)
 
 
 def build_database(args):
     # build source.txt
     output_dir = args["output_name"]
-    subprocess.call(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
-                    shell=True)
-    subprocess.call(["while read line; do grep ${line} " + args["source_associations"] + " >> rhs.txt; done < " + output_dir + 
-                    "/final_genome_list.txt"], shell=True)
-    subprocess.call(["paste " + output_dir + "/final_genome_list.txt " + output_dir + "/rhs.txt >> " + output_dir + "/sources.txt"],
-                    shell=True)
+    subprocess.run(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
+                    shell=True,check=True)
+    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " >> rhs.txt; done < " + output_dir + 
+                    "/final_genome_list.txt"], shell=True,check=True)
+    subprocess.run(["paste " + output_dir + "/final_genome_list.txt " + output_dir + "/rhs.txt >> " + output_dir + "/sources.txt"],
+                    shell=True,check=True)
 
     # concatenate genomes
-    subprocess.call(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True)
+    subprocess.run(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True,check=True)
 
     # build gdef.txt
-    subprocess.call(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True)
-    subprocess.call(["while read line; do genome=$(echo ${line} | rev | cut -f 2- -d '.' | rev); echo ${genome}'.fna' >> " + output_dir + "/lhs.txt; done < "
-                     + output_dir + "/contigs.txt"],shell=True)
-    subprocess.call(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True)
+    subprocess.run(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True,check=True)
+    subprocess.run(["while read line; do genome=$(echo ${line} | rev | cut -f 2- -d '.' | rev); echo ${genome}'.fna' >> " + output_dir + "/lhs.txt; done < "
+                     + output_dir + "/contigs.txt"],shell=True,check=True)
+    subprocess.run(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True,check=True)
 
     # index
     try:
-        subprocess.call(["bwa-mem2 index -p database " + output_dir + "/database.fna"],
-                        shell=True)
+        subprocess.run(["bwa-mem2 index -p database " + output_dir + "/database.fna"],shell=True,check=True)
     except Exception as e:
         print("Error in step 4")
         print(e)
         sys.exit()
 
     # clean up
-    subprocess.call(["rm " + output_dir + "/final_genome_list.txt " + output_dir + "/*hs.txt " + output_dir + "/sinfo.csv "
-         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt"], shell=True)
-    subprocess.call(["rm -r " + output_dir + "/drep* " + output_dir + "/checkm2 " + output_dir + "/final_genomes"],
-                    shell=True)
+    subprocess.run(["rm " + output_dir + "/final_genome_list.txt " + output_dir + "/*hs.txt " + output_dir + "/sinfo.csv "
+         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt"], shell=True,check=True)
+    subprocess.run(["rm -r " + output_dir + "/drep* " + output_dir + "/checkm2 " + output_dir + "/final_genomes"],
+                    shell=True,check=True)
 
 
 ### Pipeline:
@@ -225,12 +224,12 @@ def main():
     else:
         args['output_name'] = args["output_name"] + "_SourceAppdb"
     output_dir = args['output_name']
-    subprocess.call(["mkdir " + output_dir], shell=True)
+    subprocess.run(["mkdir " + output_dir], shell=True,check=True)
 
     if not args["checkm2_info"]:
         if args["checkm2_db"]:
             try:
-                subprocess.call(["checkm2 database --setdblocation " + args["checkm2_db"]], shell=True)
+                subprocess.run(["checkm2 database --setdblocation " + args["checkm2_db"]], shell=True,check=True)
             except Exception as e:
                 print("Error in CheckM2 database configuration")
                 print(e)
@@ -238,8 +237,8 @@ def main():
         print("Step 01: checking quality of input genomes with CheckM2")
         genome_qc(args)
     else:
-        subprocess.call(["mkdir " + output_dir + "/checkm2"], shell=True)
-        subprocess.call(["cp " + args["checkm2_info"] + " " + output_dir + "/checkm2/quality_report.tsv"], shell=True)
+        subprocess.run(["mkdir " + output_dir + "/checkm2"], shell=True,check=True)
+        subprocess.run(["cp " + args["checkm2_info"] + " " + output_dir + "/checkm2/quality_report.tsv"], shell=True,check=True)
 
     print("Step 02: finalizing database genome selection")
     genome_selection(args)
