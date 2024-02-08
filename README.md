@@ -27,10 +27,8 @@ git clone https://github.com/blindner6/SourceApp.git
 
 # create two environments using the provided .yml files, one supporting the 
 # dependencies for "sourceapp.py" and the other for "sourceapp_build.py"
-mamba create -n sourceapp
-mamba env update -n sourceapp --file SourceApp/sourceapp.yml
-mamba create -n sourceapp_build
-mamba env update -n sourceapp_build --file SourceApp/sourceapp_build.yml
+mamba create -n sourceapp --file path/to/SourceApp/dependencies/sourceapp.yml
+mamba create -n sourceapp_build --file path/to/SourceApp/dependencies/sourceapp_build.yml
 
 # pip install one dependency
 mamba activate sourceapp
