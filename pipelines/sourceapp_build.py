@@ -67,7 +67,7 @@ def genome_derep(args):
             sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
             try:
                 subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + 
-                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.STDERR)
+                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
                 print(e)
@@ -84,7 +84,7 @@ def genome_derep(args):
                 source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
                 try:
                     subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                    + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.STDERR)
+                                    + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.DEVNULL)
                 except Exception as e:
                     print("Error in step 3")
                     print(e)
