@@ -31,7 +31,7 @@ def genome_qc(args):
 def genome_selection(args):
     # toss out bad genomes
     quality = args["genome_quality"]
-    output_dir = args["output_name"] + "_SourceAppdb"
+    output_dir = args["output_name"]
     gdf = pd.read_csv(output_dir + "/checkm2/quality_report.tsv", sep="\t").iloc[:, 0:3]
     gdf.iloc[:, 0] = gdf.iloc[:, 0] + ".fna"
     gdf = gdf[gdf.iloc[:, 1] - 5 * gdf.iloc[:, 2] >= quality]
@@ -47,7 +47,7 @@ def genome_selection(args):
 
 def genome_derep(args):
     input_dir = args["input_dir"]
-    output_dir = args["output_name"] + "_SourceAppdb"
+    output_dir = args["output_name"]
     noderep = args["no_dereplication"]
     removecrx = args["remove_crx"]
     sdf = pd.read_csv(output_dir + "/sinfo.csv", sep=",",
@@ -107,7 +107,7 @@ def genome_derep(args):
 def build_database(args):
     threads = args["threads"]
     # build source.txt
-    output_dir = args["output_name"] + "_SourceAppdb"
+    output_dir = args["output_name"]
     subprocess.call([
                         "ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
                     shell=True)
@@ -234,7 +234,7 @@ def main():
         args['output_name'] = args["output_name"][:-1] + "_SourceAppdb"
     else:
         args['output_name'] = args["output_name"] + "_SourceAppdb"
-    
+    output_dir = args['output_name']
     subprocess.call(["mkdir " + output_dir], shell=True)
 
     if not args["checkm2_info"]:
