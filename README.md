@@ -20,7 +20,7 @@ For functional population proportioning in biological wastewater treatment datas
 
 # Installation
 
-The development version of SourceApp is available here for those interested in testing the software before its publication. It is anticipated that at the time of publication, we will create and maintain a Bioconda recipe for direct installation with `conda` or `mamba`. In the interim, we suggest the following for obtaining a working version of the tool:
+We are currently recommending installation with `conda` / `mamba` and aim to create a Bioconda recipe for easier user installation after publication. In the interim, the following guide should allow users to set up two environments for running SourceApp. One environment is for the main pipeline of SourceApp (`sourceapp.py`) and the other is for building your own databases (`sourceapp_build.py`). 
 ```
 # clone this repo
 git clone https://github.com/blindner6/SourceApp.git
@@ -32,9 +32,16 @@ mamba env update -n sourceapp --file SourceApp/sourceapp.yml
 mamba create -n sourceapp_build
 mamba env update -n sourceapp_build --file SourceApp/sourceapp_build.yml
 
-# test your installation:
+# pip install one dependency
+mamba activate sourceapp
+pip install MicrobeCensus-SourceApp
+
+# test your environments:
 micromamba activate sourceapp
-python sourceapp.py -h
+python path/to/sourceapp.py -h
+
+micromamba activate sourceapp_build
+python path/to/sourceapp_build.py -h
 
 ```
 # Usage
