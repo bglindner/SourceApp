@@ -90,7 +90,7 @@ def genome_derep(args):
                     print(e)
                     sys.exit()
             print("Collecting non-redundant genome set")
-            subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],
+            subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/; done"],
                             shell=True,check=True)
 
     # collect representative genomes and rename them
