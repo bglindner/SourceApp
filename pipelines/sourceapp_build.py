@@ -105,7 +105,6 @@ def genome_derep(args):
 
 
 def build_database(args):
-    threads = args["threads"]
     # build source.txt
     output_dir = args["output_name"]
     subprocess.call([
@@ -130,7 +129,7 @@ def build_database(args):
 
     # index
     try:
-        subprocess.call(["bwa-mem2 index" + str(threads) + " -p database " + output_dir + "/database.fna"],
+        subprocess.call(["bwa-mem2 index -p database " + output_dir + "/database.fna"],
                         shell=True)
     except Exception as e:
         print("Error in step 4")
