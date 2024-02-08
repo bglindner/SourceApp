@@ -36,15 +36,15 @@ pip install MicrobeCensus-SourceApp
 
 # test your environments:
 micromamba activate sourceapp
-python path/to/sourceapp.py -h
+python path/to/SourceApp/pipelines/sourceapp.py -h
 
 micromamba activate sourceapp_build
-python path/to/sourceapp_build.py -h
+python path/to/SourceApp/pipelines/sourceapp_build.py -h
 
 ```
 # Usage
 
-`sourceapp.py` expects as input paired short read metagenomic data. The user should supply these reads as gzipped FASTQ files. No prior adapter trimming or QC is necessary as SourceApp will automate read trimming with `fastp` but the user can disable this step if they would like to perform it themselves with `--skip-trimming`. In addition to short reads, SourceApp needs a genomic database specifically formatted for use by the tool. This can be created by SourceApp from genomes provided by the user with `sourceapp_build.py` or a default database will be provided in a forthcoming publication (Graham et al, _in prep_). Users should specify the location of an output directory for results to be written to. 
+`sourceapp.py` expects as input paired short read metagenomic data. The user should supply these reads as gzipped FASTQ files. No prior adapter trimming or QC is necessary as SourceApp will automate read trimming with `fastp` but the user can disable this step with `--skip-trimming`. In addition to short reads, SourceApp needs a genomic database specifically formatted for use by the tool. This can be created by SourceApp from genomes provided by the user with `sourceapp_build.py` or a default database will be available here soon. Users should specify the location of an output directory for results to be written to. 
 
 SourceApp is primarily designed for use with a Unix-based HPC and no support is offered for deployment with alternative operating systems.
 
@@ -81,6 +81,8 @@ options:
 ```
 
 # Database construction
+
+SourceApp performs best when users are able to supply genomes recovered from the contaminating sources the user expects to be present. `sourceapp_build.py` allows users to provide a set of genomes which they have collected/curated and create a SourceApp database for use with the main pipeline. To do this, users should gather genomes as FASTA files in an input directory and record in a tab-separated list, the name of each genome (col1) and its fecal source (col2). From these two inputs, SourceApp will output a directory containing a database which can be passed into `sourceapp.py -d`.
 
 ```
 usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--remove-crx] [--no-dereplication]
