@@ -67,7 +67,7 @@ def genome_derep(args):
             sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
             try:
                 subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + 
-                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.DEVNULL)
+                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stderr=subprocess.DEVNULL))
             except Exception as e:
                 print("Error in step 3")
                 print(e)
@@ -84,7 +84,7 @@ def genome_derep(args):
                 source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
                 try:
                     subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                    + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stdout=subprocess.DEVNULL)
+                                    + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stderr=subprocess.DEVNULL)
                 except Exception as e:
                     print("Error in step 3")
                     print(e)
@@ -105,7 +105,7 @@ def build_database(args):
     output_dir = args["output_name"]
     subprocess.run(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
                     shell=True,check=True)
-    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " " + output_dir + " >> rhs.txt; done < " + output_dir + 
+    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " >> " + output_dir + "/rhs.txt; done < " + output_dir + 
                     "/final_genome_list.txt"], shell=True,check=True)
     subprocess.run(["paste " + output_dir + "/final_genome_list.txt " + output_dir + "/rhs.txt >> " + output_dir + "/sources.txt"],
                     shell=True,check=True)
