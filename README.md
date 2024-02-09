@@ -141,6 +141,11 @@ path/to/genome4.fna      sourceC
 ...
 path/to/genomeN.fna      sourceN
 ```
+For example:
+```
+python sourceapp_build.py -i path/to/genomes/dir -o path/to/output_dir -s path/to/source_associations.tsv -d path/to/CheckM2_db/*.dmnd
+```
+
 # Database structure
 
 # Default database
