@@ -134,12 +134,12 @@ optional arguments:
 ```
 `sourceapp_build.py` expects the tab-separated input source association table to be structured like so (no header):
 ```
-path/to/genome1.fna      sourceA
-path/to/genome2.fna      sourceA
-path/to/genome3.fna      sourceB
-path/to/genome4.fna      sourceC
+genome1.fna      sourceA
+genome2.fna      sourceA
+genome3.fna      sourceB
+genome4.fna      sourceC
 ...
-path/to/genomeN.fna      sourceN
+genomeN.fna      sourceN
 ```
 For example:
 ```
