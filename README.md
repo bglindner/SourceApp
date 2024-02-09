@@ -117,15 +117,15 @@ To assist users with achieving good performance from SourceApp, we have built a 
 | source | n sp. | note |
 |--------|---|------|
 | bird | x | non-domesticated |
-cat | x | domesticated |
-chicken | x | domesticated |
-cow | x | domesticated; bos * |
-dog | x | domesticated |
-human | x  | |
-pig | x | domesticated |
-ruminant | x |  mostly domesticated (goats and sheep) |
-septage | x |  |
-wastewater | x | primary and secondary |
+|cat | x | domesticated |
+|chicken | x | domesticated |
+|cow | x | domesticated; bos * |
+|dog | x | domesticated |
+|human | x  | |
+|pig | x | domesticated |
+|ruminant | x |  mostly domesticated (goats and sheep) |
+|septage | x |  |
+|wastewater | x | primary and secondary |
 
 
 
