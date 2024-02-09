@@ -45,13 +45,11 @@ If you have trouble solving the environment, first check to see if your channel 
 ```
 # see channel_priority:
 mamba config list
-# or
-conda config --list
+# or --list in conda
 
 # change as needed:
 mamba config set channel_priority flexible
-# or
-conda config --set channel_priority flexible
+# or --set in conda
 ```
 Both pipelines have a fair amount of dependencies and depending on your system architecture and its disk space limits, you may want to clean up some of the installation files before moving on:
 ```
