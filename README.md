@@ -43,13 +43,11 @@ python path/to/SourceApp/pipelines/sourceapp_build.py -h
 ```
 If you have trouble solving the environment, first check to see if your channel priority is flexible and change if needed:
 ```
-# see channel_priority:
+# see channel_priority: (--list in conda)
 mamba config list
-# or --list in conda
 
-# change as needed:
+# change as needed: (--set in conda)
 mamba config set channel_priority flexible
-# or --set in conda
 ```
 Both pipelines have a fair amount of dependencies and depending on your system architecture and its disk space limits, you may want to clean up some of the installation files before moving on:
 ```
