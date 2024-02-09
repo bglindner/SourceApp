@@ -35,8 +35,8 @@ mamba activate sourceapp
 pip install MicrobeCensus-SourceApp
 
 # test your environments:
-mamba activate sourceapp
 python path/to/SourceApp/pipelines/sourceapp.py -h
+mamba deactivate
 
 mamba activate sourceapp_build
 python path/to/SourceApp/pipelines/sourceapp_build.py -h
