@@ -42,7 +42,7 @@ mamba activate sourceapp_build
 python path/to/SourceApp/pipelines/sourceapp_build.py -h
 
 ```
-If you have trouble with either `conda` or `mamba` solving the environment, first check to see if your channel priority is flexible:
+If you have trouble solving the environment, first check to see if your channel priority is flexible:
 ```
 # see channel_priority:
 mamba config list
