@@ -129,7 +129,7 @@ To assist users with achieving good performance from SourceApp, we have built a 
 |human | x  | |
 |pig | x | domesticated |
 |ruminant | x |  mostly domesticated (goats and sheep) |
-|septage | x |  |
+|septage |x |  |
 |wastewater | x | primary and secondary |
 
 # Citations
