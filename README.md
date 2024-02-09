@@ -42,14 +42,14 @@ mamba activate sourceapp_build
 python path/to/SourceApp/pipelines/sourceapp_build.py -h
 
 ```
-If you have trouble solving the environment, first check to see if your channel priority is flexible and make it flexible if needed:
+If you have trouble solving the environment, first check to see if your channel priority is flexible and change if needed:
 ```
 # see channel_priority:
 mamba config list
 # or
 conda config --list
 
-# change it if needed:
+# change as needed:
 mamba config set channel_priority flexible
 # or
 conda config --set channel_priority flexible
