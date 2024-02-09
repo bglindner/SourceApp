@@ -149,8 +149,8 @@ def main():
     )
     parser.add_argument(
         '-o', '--output-name',
-        help="Name of the database to be created. SourceApp will create an output directory in the current working \
-             directory containing the finished database with the provided string + '_SourceAppdb/'",
+        help="Path to new directory which SourceApp should build the database in. SourceApp will create the database output directory \
+              at the specified path appended with + '_SourceAppdb/'",
         metavar="",
         type=str,
         required=True
