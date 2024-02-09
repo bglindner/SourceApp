@@ -91,6 +91,9 @@ options:
 
 ```
 
+For example:
+`python sourceapp.py -i raw_reads/sample.1.fastq.gz,raw_reads/sample.2.fastq.gz -o sourceapp_results -d path/to/SourceApp_db`
+
 # Outputs
 
 Explanation
