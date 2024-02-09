@@ -3,8 +3,7 @@
 '''
 SourceApp: Python implementation of the Unix-based environmental monitoring tool.
 
-sourceapp.py requires a properly formatted reference. This script automates creation
-of such a database.
+sourceapp.py requires a properly formatted database. This script automates its creation.
 '''
 # =============================================================================
 ### Libraries:
@@ -124,12 +123,12 @@ def build_database(args):
     try: # we are metering our usage of -b based on database size to compromise on memory usage and speed in the case of very large inputs. 
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
          # they'll need at least RAM >= 3 x sum(input FASTA) 
-        if file_size >= 1 and file_size.st_size < 30: # 1GB - 20GB
-            subprocess.run(["bwa index -b 3750000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
-        elif file_size.st_size >= 30: # greater than 20GB
-            subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
+        if file_size >= 1 and file_size < 30: # 1GB - 20GB
+            subprocess.run(["bwa index -b 3750000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
+        elif file_size >= 30: # greater than 20GB
+            subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         else: # less than 1GB
-            subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
+            subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
     except Exception as e:
         print("Error in step 4")
         print(e)
