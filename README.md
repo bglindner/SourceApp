@@ -35,12 +35,24 @@ mamba activate sourceapp
 pip install MicrobeCensus-SourceApp
 
 # test your environments:
-micromamba activate sourceapp
+mamba activate sourceapp
 python path/to/SourceApp/pipelines/sourceapp.py -h
 
-micromamba activate sourceapp_build
+mamba activate sourceapp_build
 python path/to/SourceApp/pipelines/sourceapp_build.py -h
 
+```
+If you have trouble with either `conda` or `mamba` solving the environment, first check to see if your channel priority is flexible:
+```
+# see channel_priority:
+mamba config list
+# or
+conda config --list
+
+# change it if needed:
+mamba config set channel_priority flexible
+# or
+conda config --set channel_priority flexible
 ```
 # Usage
 
