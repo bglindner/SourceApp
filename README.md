@@ -85,34 +85,32 @@ options:
 SourceApp performs best when users are able to supply genomes recovered from the contaminating sources the user expects to be present. `sourceapp_build.py` allows users to provide a set of genomes which they have collected/curated and create a SourceApp database for use with the main pipeline. To do this, users should gather genomes as FASTA files in an input directory and record in a tab-separated list, the name of each genome (col1) and its fecal source (col2). From these two inputs, SourceApp will output a directory containing a database which can be passed into `sourceapp.py -d`.
 
 ```
-usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--remove-crx] [--no-dereplication]
+usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--remove-crx] [--no-dereplication] [-d] [-c]
 
 SourceApp: Python implementation of the Unix-based environmental monitoring tool.
 
-sourceapp.py requires a database directory that is properly configured:
+sourceapp.py requires a properly formatted reference. This script automates creation
+of such a database.
 
-SourceApp_db:
-  database      # bwamem2 index of a concatenated FASTA file of input genomes
-  gdef.tsv      # TSV, the name of the genome each contig came from in "database" ['genome', 'contig_name']
-  sources.txt   # TSV, the name of each genome and its associated source ['genome', 'source']
-
-options:
+optional arguments:
   -h, --help            show this help message and exit
-  -i , --input-dir      Path to directory containing input genomes
-  -o , --output-name    Name of the database to be created. SourceApp will create an output directory in the current working
-                        directory containing the finished database with the provided string + "_SourceAppdb/"
+  -i , --input-dir      Path to directory containing input genomes (path/to/dir/*.fna)
+  -o , --output-name    Name of the database to be created. SourceApp will create an output directory in the current working directory containing the finished database with the provided string +
+                        '_SourceAppdb/'
   -s , --source-associations 
                         Text file describing source associations of input genomes
   -a , --ani            ANI threshold for calling genome clusters
   -t , --threads        Threads available to SourceApp
   -q , --genome-quality 
-                        Aggregate quality score threshold for accepting input genomes
-  --remove-crx          Remove genomes found in the same cluster but belonging to different sources
-  --no-dereplication    Disable genome dereplication. This will create the database using all of the provided genomes which pass
-                        quality requirements.
+                        Aggregate quality score threshold for accepting input genomes (float, 0.5 default)
+  --remove-crx          Remove genomes found in the same cluster but belonging to different sources.
+  --no-dereplication    Disable genome dereplication. This will create the database using all of the provided genomes which pass quality requirements.
+  -d , --checkm2_db     Path to a local installation of the CheckM2 database (.dmnd). If not passed, SourceApp assumes you have let CheckM2 install the database in the default location
+                        (~/databases). See 'checkm2 databases -h' for more information.
+  -c , --checkm2_info   If you've already run CheckM2 yourself, path to the quality_report.tsv output.
 ```
 # Pre-built database
-To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their run (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
+To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their runs (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
 
 | source | n sp. | note |
 |--------|---|------|
@@ -126,9 +124,6 @@ To assist users with achieving good performance from SourceApp, we have built a 
 |ruminant | x |  mostly domesticated (goats and sheep) |
 |septage | x |  |
 |wastewater | x | primary and secondary |
-
-
-
 
 # Citations
 
