@@ -127,7 +127,7 @@ optional arguments:
                         (~/databases). See 'checkm2 databases -h' for more information.
   -c , --checkm2_info   If you've already run CheckM2 yourself, path to the quality_report.tsv output.
 ```
-`sourceapp_build.py` expects a tab-separated source association file to be structured like so:
+`sourceapp_build.py` expects the tab-separated input source association table to be structured like so (no header):
 ```
 path/to/genome1.fna      sourceA
 path/to/genome2.fna      sourceA
