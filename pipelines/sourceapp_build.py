@@ -119,9 +119,17 @@ def build_database(args):
                      + output_dir + "/contigs.txt"],shell=True,check=True)
     subprocess.run(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True,check=True)
 
-    # index
-    try:
-        subprocess.run(["bwa-mem2 index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
+    # indexing
+    file_size = (os.stat([output_dir + "/database.fna").st_size/1073741824)
+    try: # we are metering our usage of -b based on database size to compromise on memory usage and speed in the case of very large inputs. 
+         # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
+         # they'll need at least RAM >= 3 x sum(input FASTA) 
+        if file_size >= 1 and file_size.st_size < 30: # 1GB - 20GB
+            subprocess.run(["bwa index -b 3750000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
+        elif file_size.st_size >= 30: # greater than 20GB
+            subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
+        else: # less than 1GB
+            subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True)
     except Exception as e:
         print("Error in step 4")
         print(e)
