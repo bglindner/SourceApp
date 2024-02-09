@@ -113,19 +113,20 @@ options:
 ```
 # Pre-built database
 To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately run. This database includes entries representing the following fecal sources:
-```
-source n note
-bird x non-domesticated
-cat x domesticated
-chicken x domesticated
-cow x domesticated; bos *
-dog x domesticated
-human x 
-pig x omesticated 
-ruminant x mostly domesticated (goats and sheep)
-septage x 
-wastewater x genomes from collection system, raw influent, and secondary
-```
+
+| source | n sp. | note |
+|--------|---|------|
+| bird | x | non-domesticated |
+cat | x | domesticated |
+chicken | x | domesticated |
+cow | x | domesticated; bos * |
+dog | x | domesticated |
+human | x  | |
+pig | x | domesticated |
+ruminant | x |  mostly domesticated (goats and sheep) |
+septage | x |  |
+wastewater | x | primary and secondary |
+
 
 
 
