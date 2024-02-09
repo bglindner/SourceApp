@@ -127,6 +127,8 @@ optional arguments:
                         (~/databases). See 'checkm2 databases -h' for more information.
   -c , --checkm2_info   If you've already run CheckM2 yourself, path to the quality_report.tsv output.
 ```
+# Database structure and components
+
 # Pre-built database
 To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their runs (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
 
