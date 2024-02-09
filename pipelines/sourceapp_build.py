@@ -120,7 +120,7 @@ def build_database(args):
     subprocess.run(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True,check=True)
 
     # indexing
-    file_size = os.stat([output_dir + "/database.fna"][0]).st_size/1073741824
+    file_size = float(os.stat([output_dir + "/database.fna"][0]).st_size)/1073741824
     try: # we are metering our usage of -b based on database size to compromise on memory usage and speed in the case of very large inputs. 
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
          # they'll need at least RAM >= 3 x sum(input FASTA) 
