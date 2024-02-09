@@ -13,7 +13,6 @@ import argparse
 import subprocess
 import pandas as pd
 
-
 ### Core Functions:
 def genome_qc(args):
     threads = args["threads"]
@@ -46,6 +45,7 @@ def genome_selection(args):
 def genome_derep(args):
     input_dir = args["input_dir"]
     output_dir = args["output_name"]
+    quality = args["genome_quality"]
     noderep = args["no_dereplication"]
     removecrx = args["remove_crx"]
     sdf = pd.read_csv(output_dir + "/sinfo.csv", sep=",",
@@ -65,8 +65,8 @@ def genome_derep(args):
             sdf.iloc[:, 0] = input_dir + "/" + sdf.iloc[:, 0]
             sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
             try:
-                subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + 
-                                 " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stderr=subprocess.DEVNULL)
+                subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + " --genomeInfo " 
+                                + ginfo + " --S_algorithm fastANI -p " + str(threads) + " -comp 50 " + str(quality*100) + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
                 print(e)
@@ -81,9 +81,12 @@ def genome_derep(args):
                 source_df = sdf[sdf.iloc[:, 1] == source].iloc[:, 0]
                 source_df.iloc[:] = input_dir + "/" + source_df.iloc[:]
                 source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
+                subprocess.run(["echo 'genome,completeness,contamination' > " + output_dir + "/" + source + ".ginfo.txt; while read genome; do sid=$(basename ${genome}); grep ${sid} " 
+                                + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.txt; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
                 try:
                     subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                    + " --genomeInfo " + ginfo + " --S_algorithm fastANI -p " + str(threads)], shell=True,check=True,stderr=subprocess.DEVNULL)
+                                    + " --genomeInfo " + output_dir+"/"+source+".ginfo.txt" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
+                                    + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
                 except Exception as e:
                     print("Error in step 3")
                     print(e)
@@ -97,7 +100,6 @@ def genome_derep(args):
                     "seqtk rename ${genome} ${sampleid}. > ${genome}.new; done"],shell=True,check=True)
     subprocess.run(["for genome in " + output_dir + "/final_genomes/*.new; do sampleid=$(echo ${genome} | rev | cut -f 2- -d '.' | rev);"
                      "mv ${genome} ${sampleid}; done"],shell=True,check=True)
-
 
 def build_database(args):
     # build source.txt
@@ -123,9 +125,9 @@ def build_database(args):
     try: # we are metering our usage of -b based on database size to compromise on memory usage and speed in the case of very large inputs. 
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
          # they'll need at least RAM >= 3 x sum(input FASTA) 
-        if file_size >= 1 and file_size < 30: # 1GB - 20GB
+        if file_size >= 1 and file_size < 30: # 1GB - 30GB
             subprocess.run(["bwa index -b 3750000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
-        elif file_size >= 30: # greater than 20GB
+        elif file_size >= 30: # greater than 30GB
             subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         else: # less than 1GB
             subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
@@ -136,10 +138,9 @@ def build_database(args):
 
     # clean up
     subprocess.run(["rm " + output_dir + "/final_genome_list.txt " + output_dir + "/*hs.txt " + output_dir + "/sinfo.csv "
-         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt"], shell=True,check=True)
+         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt" + output_dir + "/*.ginfo.txt"], shell=True,check=True)
     subprocess.run(["rm -r " + output_dir + "/drep* " + output_dir + "/checkm2 " + output_dir + "/final_genomes"],
                     shell=True,check=True)
-
 
 ### Pipeline:
 def main():
@@ -257,7 +258,6 @@ def main():
     build_database(args)
 
     print("SourceApp database construction complete")
-
 
 if __name__ == "__main__":
     main()
