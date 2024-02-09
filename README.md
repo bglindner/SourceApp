@@ -112,7 +112,7 @@ options:
                         quality requirements.
 ```
 # Pre-built database
-To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their run (or to augment their own genomic datasets for use with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
+To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their run (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
 
 | source | n sp. | note |
 |--------|---|------|
