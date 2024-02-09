@@ -93,7 +93,7 @@ options:
 
 For example:
 ```
-python sourceapp.py --use-geq -i raw_reads/sample.1.fastq.gz,raw_reads/sample.2.fastq.gz -o sourceapp_results -d path/to/SourceApp_db
+python sourceapp.py --use-geq -i raw_reads/sample1.1.fastq.gz,raw_reads/sample1.2.fastq.gz -o sourceapp_results -d path/to/SourceApp_db
 ```
 
 # Outputs
