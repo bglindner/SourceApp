@@ -138,7 +138,7 @@ def build_database(args):
 
     # clean up
     subprocess.run(["rm " + output_dir + "/final_genome_list.txt " + output_dir + "/*hs.txt " + output_dir + "/sinfo.csv "
-         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt" + output_dir + "/*.ginfo.txt"], shell=True,check=True)
+         + output_dir + "/*glist.txt " + output_dir + "/contigs.txt " + output_dir + "/*.ginfo.txt"], shell=True,check=True)
     subprocess.run(["rm -r " + output_dir + "/drep* " + output_dir + "/checkm2 " + output_dir + "/final_genomes"],
                     shell=True,check=True)
 
