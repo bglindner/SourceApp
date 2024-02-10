@@ -48,8 +48,7 @@ def genome_derep(args):
     quality = args["genome_quality"]
     noderep = args["no_dereplication"]
     removecrx = args["remove_crx"]
-    sdf = pd.read_csv(output_dir + "/sinfo.csv", sep=",",
-                      header=None)  # use clean source info to know which genomes passed QC
+    sdf = pd.read_csv(output_dir + "/sinfo.csv", sep=",",header=None)  # use clean source info to know which genomes passed QC
     sources = sdf.iloc[:, 1].unique()
     ginfo = output_dir + "/ginfo.csv"  # I don't think dRep cares if there are extraneous entries in this file; no need to filter for if/else/for below.
     ani = args["ani"]
