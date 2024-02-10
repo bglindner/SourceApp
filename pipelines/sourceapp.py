@@ -144,7 +144,7 @@ def summarize(args):
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         df = pd.read_csv(args['output_dir'][:-1] + '/mappings_filtered.txt', header=0, sep='\t')
     else:
-        df = pd.read_csv(args['output_dir'] + '/geq.txt', header=0, sep='\t')
+        df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
     portions=[]
     if usegeq:
         geq = get_geq(args)
@@ -152,10 +152,10 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + df[df['Genome']==genome]['Depth'].sum()
+                gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
             geq_frac = gsum/geq
             portions.append([source,geq_frac])
-        portions = pd.DataFrame(portions, header=['Source','Portion'])
+        sourceApp = pd.DataFrame(portions, columns=['Source','Portion'])
         if sourceApp['Portion'].sum() > 1:
             sourceApp['Portion'] = sourceApp['Portion']/sourceApp['Portion'].sum()
             print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.')
@@ -176,19 +176,19 @@ def read_source(file): # helper function to read in the source dictionary stored
     with open(file) as fh:
         for line in fh:
             key, val = line.rstrip().split()
-        dic[key] = val
+            dic[key] = val
     return dic
 
 def get_geq(args):
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        file = args['output_dir'][:-1] + '/mappings_filtered.txt'
+        file = args['output_dir'][:-1] + '/geq.txt'
     else:
         file = args['output_dir'] + '/geq.txt'
     with open(file) as fh:
         for index, line in enumerate(fh):
-            if index == 11:
+            if index == 12:
                 censusline = line.split()
-    output = int(censusline[0].split('\t')[1].split('\n')[0])
+    output = float(censusline[1])
     return output
 
 ### Pipeline:
@@ -201,7 +201,7 @@ def main():
         '-i', '--input-files',
         help='Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip',
         metavar='',
-        type=str,
+        type=str,geq 
         required=True
         )
     parser.add_argument(
