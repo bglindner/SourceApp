@@ -183,7 +183,7 @@ def get_geq(args):
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         file = args['output_dir'][:-1] + '/mappings_filtered.txt'
     else:
-        file = args['output_dir'][:-1] + '/geq.txt'
+        file = args['output_dir'] + '/geq.txt'
     with open(file) as fh:
         for index, line in enumerate(fh):
             if index == 11:
