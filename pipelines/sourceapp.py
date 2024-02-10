@@ -201,7 +201,7 @@ def main():
         '-i', '--input-files',
         help='Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip',
         metavar='',
-        type=str,geq 
+        type=str, 
         required=True
         )
     parser.add_argument(
