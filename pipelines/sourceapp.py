@@ -123,7 +123,7 @@ def read_filter(args):
             try:
                 subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
                             " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
-                            " -o "+output+" --trim-min "+str(trunc)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
             except Exception as e:
                 print('Error in step 4: filtering of read mappings. Exiting . . .')
                 sys.exit()
@@ -131,7 +131,7 @@ def read_filter(args):
             try:
                 subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
                             " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output+" --trim-min "+str(trunc)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
             except Exception as e:
                 print('Error in step 4: filtering of read mappings. Exiting . . .')
                 sys.exit()
