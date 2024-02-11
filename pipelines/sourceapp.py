@@ -289,7 +289,10 @@ def main():
     read_filter(args)
 
     print('Beginning step 5: results summarization')
-    output_table = summarize(args)
+    results = summarize(args)
+    print(results)
+    print(results.__class__)
+    output_table = pd.DataFrame(results)
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         output_table.to_csv(args['output_dir'][-1]+'/results.csv')
