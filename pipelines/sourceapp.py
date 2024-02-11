@@ -295,9 +295,9 @@ def main():
     output_table = pd.DataFrame(results)
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output_table.to_csv(args['output_dir'][-1]+'/results.csv')
+        output_table.to_csv(args['output_dir'][-1]+'/results.csv', index=False, header=["Source","Portion"])
     else:
-        output_table.to_csv(args['output_dir']+'/results.csv')
+        output_table.to_csv(args['output_dir']+'/results.csv', index=False, header=["Source","Portion"])
 
     print('The following results printed to results.csv in output directory:')
     print(output_table)
