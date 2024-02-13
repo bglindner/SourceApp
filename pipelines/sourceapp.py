@@ -140,7 +140,7 @@ def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
     sourcedict = read_source(args['sourceapp_database'].replace('/','') + '/sources.txt')
-    sources = list(set(sourcedict.values()))
+    sources = sorted(list(set(sourcedict.values())))
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         df = pd.read_csv(args['output_dir'][:-1] + '/mappings_filtered.txt', header=0, sep='\t')
     else:
