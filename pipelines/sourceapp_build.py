@@ -70,10 +70,12 @@ def genome_derep(args):
                 print("Error in step 3")
                 print(e)
                 sys.exit()
-            ######################################################################################################################
-            ### Warning this behavior is not complete yet! We need to have it remove ANY genome inside a dRep primary cluster. ###
-            ######################################################################################################################
+
             subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
+            crx_genomes = flag_crx(output_dir)
+            crx_genomes.to_csv(output_dir + "/crx_genomes.txt",index=False,header=None)
+            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < "output_dir + "/crx_genomes.txt"]
+            
         else:  # dereplicate WITHIN sources
             for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
                 print("Processing genomes tagged with source: " + source)
@@ -95,10 +97,11 @@ def genome_derep(args):
                             shell=True,check=True)
 
     # collect representative genomes and rename them
-    subprocess.run(["for genome in " + output_dir + "/final_genomes/*.fna; do sampleid=$(basename ${genome} | rev | cut -f 2- -d '.' | rev);" 
-                    "seqtk rename ${genome} ${sampleid}. > ${genome}.new; done"],shell=True,check=True)
-    subprocess.run(["for genome in " + output_dir + "/final_genomes/*.new; do sampleid=$(echo ${genome} | rev | cut -f 2- -d '.' | rev);"
-                     "mv ${genome} ${sampleid}; done"],shell=True,check=True)
+    dir=[output_dir + "/final_genomes"] 
+    for genome in os.listdir(dir[0]):
+        if genome.endswith(".fna"):
+            prefix=os.path.splittext(genome)[0]
+            Fasta_rename_sequences(genome, prefix)
 
 def build_database(args):
     # build source.txt
@@ -140,6 +143,40 @@ def build_database(args):
          + output_dir + "/*glist.txt " + output_dir + "/contigs.txt " + output_dir + "/*.ginfo.txt"], shell=True,check=True)
     subprocess.run(["rm -r " + output_dir + "/drep* " + output_dir + "/checkm2 " + output_dir + "/final_genomes"],
                     shell=True,check=True)
+
+# helper functions:
+def read_fasta(fp):
+    name, seq = None, []
+    for line in fp:
+        line = line.rstrip()
+        if line.startswith(">"):
+            if name: yield (name, ''.join(seq))
+            name, seq = line, []
+        else:
+            seq.append(line)
+    if name: yield (name, ''.join(seq))
+
+def Fasta_rename_sequences(infile, prefix):
+    outfile = prefix + '.rename'
+    with open(infile, 'r+') as f, open(outfile, 'w') as o:
+        i = 1
+        for name, seq in read_fasta(f):
+            newName = f'>{prefix}_{i:04}\n{seq}\n'
+            o.write(newName)
+            i += 1
+    _ = subprocess.run(['mv', outfile, infile])
+
+def flag_crx(workdir):
+    #####
+    # create a dataframe called "crx_list" with one column, listing all cross-reactive genomes to be removed
+    # workdir == this is the project directory for SourceApp build where all the results are being written.
+    # each source has a directory "/drep_source/" here
+    #####
+
+    
+
+    
+    return crx_list
 
 ### Pipeline:
 def main():
