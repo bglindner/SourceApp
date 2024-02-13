@@ -74,7 +74,7 @@ def genome_derep(args):
             subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
             crx_genomes = flag_crx(output_dir)
             crx_genomes.to_csv(output_dir + "/crx_genomes.txt",index=False,header=None)
-            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < "output_dir + "/crx_genomes.txt"]
+            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < + "output_dir + "/crx_genomes.txt"]
             
         else:  # dereplicate WITHIN sources
             for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
@@ -118,7 +118,7 @@ def build_database(args):
 
     # build gdef.txt
     subprocess.run(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True,check=True)
-    subprocess.run(["while read line; do genome=$(echo ${line} | rev | cut -f 2- -d '.' | rev); echo ${genome}'.fna' >> " + output_dir + "/lhs.txt; done < "
+    subprocess.run(["while read line; do genome=$(echo ${line} | rev | cut -f 2- -d '_' | rev); echo ${genome}'.fna' >> " + output_dir + "/lhs.txt; done < "
                      + output_dir + "/contigs.txt"],shell=True,check=True)
     subprocess.run(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True,check=True)
 
