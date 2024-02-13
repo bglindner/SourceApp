@@ -128,9 +128,9 @@ def build_database(args):
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
          # they'll need at least RAM >= 3 x sum(input FASTA) 
         if file_size >= 1 and file_size < 30: # 1GB - 30GB
-            subprocess.run(["bwa index -b 3750000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
+            subprocess.run(["bwa index -b 5000000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         elif file_size >= 30: # greater than 30GB
-            subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
+            subprocess.run(["bwa index -b 12500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         else: # less than 1GB
             subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
     except Exception as e:
