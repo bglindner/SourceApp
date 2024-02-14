@@ -74,7 +74,7 @@ def genome_derep(args):
             subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
             new_sdf = flag_crx(output_dir)
             new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None, mode="w")
-            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < " + output_dir + "/crx_genomes.txt"]
+            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < " + output_dir + "/crx_genomes.txt"])
             
         else:  # dereplicate WITHIN sources
             for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
