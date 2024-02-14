@@ -182,9 +182,7 @@ def flag_crx(workdir):
     for cluster in singletons.index:
         df = df[~df.iloc[:,1].str.contains(cluster)]
     crx = df['genome']
-
     sdf = pd.read_csv(workdir+ "/sources.txt",header=None,sep="\t")
-    lst = []
     for x in range(len(sdf.iloc[:,0])): # all genomes
         genome = sdf.iloc[x,0]
         if crx.str.contains(genome).any(): # genomes found to be concerning
