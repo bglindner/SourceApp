@@ -96,31 +96,24 @@ def genome_derep(args):
             subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/; done"],
                             shell=True,check=True)
 
-    # collect representative genomes and rename them
-    dir=[output_dir + "/final_genomes"] 
-    for genome in os.listdir(dir[0]):
-        if genome.endswith(".fna"):
-            prefix=os.path.splittext(genome)[0]
-            Fasta_rename_sequences(genome, prefix)
-
 def build_database(args):
     # build source.txt
     output_dir = args["output_name"]
     subprocess.run(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
                     shell=True,check=True)
-    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " >> " + output_dir + "/rhs.txt; done < " + output_dir + 
+    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " >> " + output_dir + "/sources.txt; done < " + output_dir + 
                     "/final_genome_list.txt"], shell=True,check=True)
-    subprocess.run(["paste " + output_dir + "/final_genome_list.txt " + output_dir + "/rhs.txt >> " + output_dir + "/sources.txt"],
-                    shell=True,check=True)
 
     # concatenate genomes
     subprocess.run(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True,check=True)
 
     # build gdef.txt
     subprocess.run(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True,check=True)
-    subprocess.run(["while read line; do genome=$(echo ${line} | rev | cut -f 2- -d '_' | rev); echo ${genome}'.fna' >> " + output_dir + "/lhs.txt; done < "
-                     + output_dir + "/contigs.txt"],shell=True,check=True)
-    subprocess.run(["paste " + output_dir + "/lhs.txt " + output_dir + "/contigs.txt >> " + output_dir + "/gdef.txt"],shell=True,check=True)
+    rhs = pd.read_csv([output_dir + "/contigs.txt"], header=None).iloc[:,0].str[1:]
+    lhs = rhs.str.rsplit("_",n=1).str.get(0)
+    lhs = lhs + ".fna"
+    gdef = pd.concat([lhs,rhs],axis=1)
+    gdef.to_csv(output_dir + "/gdef.txt", index=False, header=None, sep="\t")
 
     # indexing
     file_size = float(os.stat([output_dir + "/database.fna"][0]).st_size)/1073741824
@@ -290,6 +283,13 @@ def main():
     print("Step 03: assessing database redundancy with dRep")
     genome_derep(args)
 
+    # collect representative genomes and rename them
+    dir=[output_dir + "/final_genomes"] 
+    for genome in os.listdir(dir[0]):
+        if genome.endswith(".fna"):
+            prefix=os.path.splitext(genome)[0]
+            Fasta_rename_sequences(genome, prefix)
+    
     print("Step 04: indexing database for BWA mem")
     build_database(args)
 
