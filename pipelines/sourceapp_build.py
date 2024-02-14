@@ -64,7 +64,7 @@ def genome_derep(args):
             sdf.iloc[:, 0] = input_dir + "/" + sdf.iloc[:, 0]
             sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
             try:
-                subprocess.run(["dRep dereplicate " + output_dir + "/drep -g " + output_dir + "/glist.txt --S_ani " + str(ani) + " --genomeInfo " 
+                subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g " + output_dir + "/glist.txt --S_ani " + str(ani) + " --genomeInfo " 
                                 + ginfo + " --S_algorithm fastANI -p " + str(threads) + " -comp 50 " + str(quality*100) + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
@@ -95,6 +95,17 @@ def genome_derep(args):
             print("Collecting non-redundant genome set")
             subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/; done"],
                             shell=True,check=True)
+            
+            # we need to flag crx
+            print("Flagging any cross-reactive genomes for use by sourceapp.py")
+            try:
+                subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
+                                + "/ginfo.txt --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+            except Exception as e:
+                print("Error in step 3")
+                print(e)
+                sys.exit()
+            crx_genomes(output_dir, cdb)
 
 def build_database(args):
     # build source.txt
@@ -159,8 +170,9 @@ def Fasta_rename_sequences(infile, prefix):
             i += 1
     _ = subprocess.run(['mv', outfile, infile])
 
-def flag_crx(workdir):
+def flag_crx(workdir, cdb):
     #####
+    # I'm looking for drep_all
     # create a dataframe called "crx_list" with one column, listing all cross-reactive genomes to be removed
     # workdir == this is the project directory for SourceApp build where all the results are being written.
     # each source has a directory "/drep_source/" here
