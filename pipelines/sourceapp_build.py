@@ -72,8 +72,8 @@ def genome_derep(args):
                 sys.exit()
 
             subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
-            crx_genomes = flag_crx(output_dir)
-            crx_genomes.to_csv(output_dir + "/crx_genomes.txt",index=False,header=None)
+            new_sdf = flag_crx(output_dir)
+            new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None, mode="w")
             subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < " + output_dir + "/crx_genomes.txt"]
             
         else:  # dereplicate WITHIN sources
@@ -105,11 +105,11 @@ def genome_derep(args):
                 print("Error in step 3")
                 print(e)
                 sys.exit()
-            crx_genomes = flag_crx(output_dir)
-            crx_genomes.to_csv(output_dir + "/crx_genomes.txt",index=False,header=None)
+            new_sdf = flag_crx(output_dir)
+            new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None,mode="w")
 
 def build_database(args):
-    # build source.txt
+    # build sources.txt
     output_dir = args["output_name"]
     subprocess.run(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
                     shell=True,check=True)
@@ -175,23 +175,22 @@ def build_gdef(workdir):
     gdef = pd.concat([lhs,rhs],axis=1)
     return gdef
 
-    
-
 def flag_crx(workdir):
-    #####
-    # I'm looking for drep_all
-    # create a dataframe called "crx_list" with one column, listing all cross-reactive genomes to be removed
-    # workdir == this is the project directory for SourceApp build where all the results are being written.
-    # each source has a directory "/drep_source/" here
-    #####
-
     df = pd.read_csv(workdir + "/drep_all/data_tables/Cdb.csv", header=0)
     counts = df['secondary_cluster'].value_counts()
     singletons = counts[counts == 1]
     for cluster in singletons.index:
         df = df[~df.iloc[:,1].str.contains(cluster)]
     crx = df['genome']
-    return crx
+
+    sdf = pd.read_csv(workdir+ "/sources.txt",header=None,sep="\t")
+    lst = []
+    for x in range(len(sdf.iloc[:,0])): # all genomes
+        genome = sdf.iloc[x,0]
+        if crx.str.contains(genome).any(): # genomes found to be concerning
+            sdf.iloc[x,1] = sdf.iloc[x,1] + "_crx" # tag those genomes we found concerning
+        
+    return sdf
 
 ### Pipeline:
 def main():
