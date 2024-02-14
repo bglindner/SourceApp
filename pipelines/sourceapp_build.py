@@ -105,7 +105,8 @@ def genome_derep(args):
                 print("Error in step 3")
                 print(e)
                 sys.exit()
-            crx_genomes(output_dir, cdb)
+            crx_genomes = flag_crx(output_dir)
+            crx_genomes.to_csv(output_dir + "/crx_genomes.txt",index=False,header=None)
 
 def build_database(args):
     # build source.txt
@@ -120,17 +121,14 @@ def build_database(args):
 
     # build gdef.txt
     subprocess.run(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True,check=True)
-    rhs = pd.read_csv([output_dir + "/contigs.txt"], header=None).iloc[:,0].str[1:]
-    lhs = rhs.str.rsplit("_",n=1).str.get(0)
-    lhs = lhs + ".fna"
-    gdef = pd.concat([lhs,rhs],axis=1)
+    gdef = build_gdef(output_dir)
     gdef.to_csv(output_dir + "/gdef.txt", index=False, header=None, sep="\t")
 
     # indexing
     file_size = float(os.stat([output_dir + "/database.fna"][0]).st_size)/1073741824
     try: # we are metering our usage of -b based on database size to compromise on memory usage and speed in the case of very large inputs. 
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
-         # they'll need at least RAM >= 3 x sum(input FASTA) 
+         # they'll need at least RAM >= 2 x input FASTA file size
         if file_size >= 1 and file_size < 30: # 1GB - 30GB
             subprocess.run(["bwa index -b 5000000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         elif file_size >= 30: # greater than 30GB
@@ -170,7 +168,16 @@ def Fasta_rename_sequences(infile, prefix):
             i += 1
     _ = subprocess.run(['mv', outfile, infile])
 
-def flag_crx(workdir, cdb):
+def build_gdef(workdir):
+    rhs = pd.read_csv([workdir + "/contigs.txt"], header=None).iloc[:,0].str[1:]
+    lhs = rhs.str.rsplit("_",n=1).str.get(0)
+    lhs = lhs + ".fna"
+    gdef = pd.concat([lhs,rhs],axis=1)
+    return gdef
+
+    
+
+def flag_crx(workdir):
     #####
     # I'm looking for drep_all
     # create a dataframe called "crx_list" with one column, listing all cross-reactive genomes to be removed
@@ -178,10 +185,13 @@ def flag_crx(workdir, cdb):
     # each source has a directory "/drep_source/" here
     #####
 
-    
-
-    
-    return crx_list
+    df = pd.read_csv(workdir + "/drep_all/data_tables/Cdb.csv", header=0)
+    counts = df['secondary_cluster'].value_counts()
+    singletons = counts[counts == 1]
+    for cluster in singletons.index:
+        df = df[~df.iloc[:,1].str.contains(cluster)]
+    crx = df['genome']
+    return crx
 
 ### Pipeline:
 def main():
