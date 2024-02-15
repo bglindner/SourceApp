@@ -86,7 +86,7 @@ def genome_derep(args):
                                 + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.txt; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
                 try:
                     subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                    + " --genomeInfo " + output_dir+"/"+source+".ginfo.txt" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
+                                    + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
                                     + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
                 except Exception as e:
                     print("Error in step 3")
