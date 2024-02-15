@@ -47,7 +47,6 @@ def genome_derep(args):
     output_dir = args["output_name"]
     quality = args["genome_quality"]
     noderep = args["no_dereplication"]
-    removecrx = args["remove_crx"]
     sdf = pd.read_csv(output_dir + "/sinfo.csv", sep=",",header=None)  # use clean source info to know which genomes passed QC
     sources = sdf.iloc[:, 1].unique()
     ginfo = output_dir + "/ginfo.csv"  # I don't think dRep cares if there are extraneous entries in this file; no need to filter for if/else/for below.
@@ -58,55 +57,46 @@ def genome_derep(args):
     if noderep:
         for genome in sdf.iloc[:, 0]:
             subprocess.call(["cp " + genome + " " + output_dir + "/final_genomes/"], shell=True)
+        try:
+            subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
+                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+        except Exception as e:
+            print("Error in step 3")
+            print(e)
+            sys.exit()
+        print("no-dereplication has been called, which may result in some genomes from the same source being erroneously flagged as cross-reactive.")
+        print("Flagging any cross-reactive genomes for use by sourceapp.py") 
+        new_sdf = flag_crx(output_dir)
+        new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None,mode="w")
     else:
-        if removecrx:  # dereplicate ACROSS sources
-            print("Processing genomes from all sources and removing cross-reactive entries.")
-            sdf.iloc[:, 0] = input_dir + "/" + sdf.iloc[:, 0]
-            sdf.iloc[:, 0].to_csv(output_dir + "/glist.txt", index=False, header=None)
+        for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
+            print("Processing genomes tagged with source: " + source)
+            source_df = sdf[sdf.iloc[:, 1] == source].iloc[:, 0]
+            source_df.iloc[:] = input_dir + "/" + source_df.iloc[:]
+            source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
+            subprocess.run(["echo 'genome,completeness,contamination' > " + output_dir + "/" + source + ".ginfo.csv; while read genome; do sid=$(basename ${genome}); grep ${sid} " 
+                            + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.csv; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
             try:
-                subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g " + output_dir + "/glist.txt --S_ani " + str(ani) + " --genomeInfo " 
-                                + ginfo + " --S_algorithm fastANI -p " + str(threads) + " -comp 50 " + str(quality*100) + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
+                subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
+                                + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
+                                + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
                 print(e)
                 sys.exit()
-
-            subprocess.run(["cp " + output_dir + "/drep/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/"],shell=True,check=True)
-            new_sdf = flag_crx(output_dir)
-            new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None, mode="w")
-            subprocess.run(["while read genome; do rm " + output_dir + "/final_genomes/${genome}; done < " + output_dir + "/crx_genomes.txt"])
-            
-        else:  # dereplicate WITHIN sources
-            for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
-                print("Processing genomes tagged with source: " + source)
-                source_df = sdf[sdf.iloc[:, 1] == source].iloc[:, 0]
-                source_df.iloc[:] = input_dir + "/" + source_df.iloc[:]
-                source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
-                subprocess.run(["echo 'genome,completeness,contamination' > " + output_dir + "/" + source + ".ginfo.csv; while read genome; do sid=$(basename ${genome}); grep ${sid} " 
-                                + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.csv; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
-                try:
-                    subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                    + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
-                                    + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
-                except Exception as e:
-                    print("Error in step 3")
-                    print(e)
-                    sys.exit()
-            print("Collecting non-redundant genome set")
-            subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/; done"],
-                            shell=True,check=True)
-            
-            # we need to flag crx
-            print("Flagging any cross-reactive genomes for use by sourceapp.py")
-            try:
-                subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
-                                + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
-            except Exception as e:
-                print("Error in step 3")
-                print(e)
-                sys.exit()
-            new_sdf = flag_crx(output_dir)
-            new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None,mode="w")
+        print("Collecting non-redundant genome set")
+        subprocess.run(["for dir in " + output_dir + "/drep_*; do cp ${dir}/dereplicated_genomes/*.fna " + output_dir + "/final_genomes/; done"],
+                        shell=True,check=True)
+        print("Flagging any cross-reactive genomes for use by sourceapp.py")
+        try:
+            subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
+                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+        except Exception as e:
+            print("Error in step 3")
+            print(e)
+            sys.exit()
+        new_sdf = flag_crx(output_dir)
+        new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None,mode="w")
 
 def build_database(args):
     # build sources.txt
@@ -243,12 +233,6 @@ def main():
         required=False
     )
     parser.add_argument(
-        '--remove-crx',
-        help="Remove genomes found in the same cluster but belonging to different sources.",
-        action="store_true",
-        required=False
-    )
-    parser.add_argument(
         '--no-dereplication',
         help="Disable genome dereplication. This will create the database using all \
             of the provided genomes which pass quality requirements.",
@@ -307,7 +291,7 @@ def main():
     for genome in os.listdir(dir[0]):
         if genome.endswith(".fna"):
             prefix=os.path.splitext(genome)[0]
-            Fasta_rename_sequences(genome, prefix)
+            Fasta_rename_sequences([output_dir + "/final_genomes/" + genome][0], prefix)
     
     print("Step 04: indexing database for BWA mem")
     build_database(args)
