@@ -115,9 +115,9 @@ def build_database(args):
          # i.e., if we want more speed we have to be prepared to provide more memory. we should warn users about memory utilization here
          # they'll need at least RAM >= 2 x input FASTA file size
         if file_size >= 1 and file_size < 30: # 1GB - 30GB
-            subprocess.run(["bwa index -b 5000000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
+            subprocess.run(["bwa index -b 2500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         elif file_size >= 30: # greater than 30GB
-            subprocess.run(["bwa index -b 12500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
+            subprocess.run(["bwa index -b 7500000000 -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
         else: # less than 1GB
             subprocess.run(["bwa index -p " + output_dir + "/database " + output_dir + "/database.fna"],shell=True,check=True,stderr=subprocess.DEVNULL)
     except Exception as e:
@@ -154,7 +154,7 @@ def Fasta_rename_sequences(infile, prefix):
     _ = subprocess.run(['mv', outfile, infile])
 
 def build_gdef(workdir):
-    rhs = pd.read_csv([workdir + "/contigs.txt"], header=None).iloc[:,0].str[1:]
+    rhs = pd.read_csv([workdir + "/contigs.txt"][0], header=None).iloc[:,0].str[1:]
     lhs = rhs.str.rsplit("_",n=1).str.get(0)
     lhs = lhs + ".fna"
     gdef = pd.concat([lhs,rhs],axis=1)
