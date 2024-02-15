@@ -100,7 +100,7 @@ def genome_derep(args):
             print("Flagging any cross-reactive genomes for use by sourceapp.py")
             try:
                 subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
-                                + "/ginfo.txt --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+                                + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
                 print(e)
