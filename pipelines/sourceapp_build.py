@@ -83,7 +83,7 @@ def genome_derep(args):
                 source_df.iloc[:] = input_dir + "/" + source_df.iloc[:]
                 source_df.to_csv(output_dir + "/" + source + ".glist.txt", index=False, header=None)
                 subprocess.run(["echo 'genome,completeness,contamination' > " + output_dir + "/" + source + ".ginfo.txt; while read genome; do sid=$(basename ${genome}); grep ${sid} " 
-                                + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.txt; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
+                                + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.csv; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
                 try:
                     subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
                                     + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
