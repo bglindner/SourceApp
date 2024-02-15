@@ -39,7 +39,7 @@ def genome_selection(args):
             sdf = sdf[~sdf.iloc[:, 0].str.contains(genome)]
 
     gdf.to_csv(output_dir + "/ginfo.csv", sep=",", header=["genome", "completeness", "contamination"], index=False)
-    sdf.to_csv(output_dir + "/sinfo.csv", sep=",", header=None, index=False)
+    sdf.to_csv(output_dir + "/sinfo.csv", sep=",", header=None, index=False) # sinfo contains host associations for QC'd genomes
 
 
 def genome_derep(args):
@@ -99,12 +99,7 @@ def genome_derep(args):
         new_sdf.to_csv(output_dir + "/sources.txt",index=False,header=None,mode="w")
 
 def build_database(args):
-    # build sources.txt
     output_dir = args["output_name"]
-    subprocess.run(["ls " + output_dir + "/final_genomes/*.fna | rev | cut -f 1 -d '/' | rev > " + output_dir + "/final_genome_list.txt"],
-                    shell=True,check=True)
-    subprocess.run(["while read line; do grep ${line} " + args["source_associations"] + " >> " + output_dir + "/sources.txt; done < " + output_dir + 
-                    "/final_genome_list.txt"], shell=True,check=True)
 
     # concatenate genomes
     subprocess.run(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True,check=True)
