@@ -161,27 +161,23 @@ def build_gdef(workdir):
     return gdef
 
 def flag_crx(workdir):
-    df = pd.read_csv(workdir + "/drep_all/data_tables/Cdb.csv", header=0)
-    counts = df['secondary_cluster'].value_counts()
-    singletons = counts[counts == 1]
-    for cluster in singletons.index:
-        df = df[~df.iloc[:,1].str.contains(cluster)]
-    crx = df['genome']
-    sdf = pd.read_csv(workdir + "/sinfo.csv", header=None) 
-    for x in range(len(sdf.iloc[:,0])): # all genomes
-        genome = sdf.iloc[x,0]
-        if crx.str.contains(genome).any(): # genomes found to be concerning
-            sdf.iloc[x,1] = sdf.iloc[x,1] + "_crx" # tag those genomes found concerning
-    clusters = df.iloc[:,1].unique()
-    gdic = {}
-    for x in range(len(clusters)):
-        tmp = list(df[df.iloc[:,1] == clusters[x]].iloc[:,0])
-        gdic[clusters[x]] = tmp
-    with open(workdir+"/crx_gdict.csv","w") as fh:
-        writer = csv.writer(fh)
-        for key,value in gdic.items():
-            writer.writerow(["cluster_" + key,*value])
-    return sdf
+    cdf = pd.read_csv(workdir + "/drep_all/data_tables/Cdb.csv", header=0)
+    sdf = pd.read_csv(workdir + "/sinfo.csv", names=["genome","source"]) 
+
+    lst = []
+    for x in range(len(cdf["genome"])):
+        genome = cdf["genome"].iloc[x]
+        clust = cdf["secondary_cluster"].iloc[x]
+        ind = cdf[cdf["secondary_cluster"]==clust].index
+        if len(ind) == 1:
+            lst.append(sdf.iloc[i]["source"])
+        else:
+            lst.append(sdf.iloc[i]["source"]+"_crx")
+    out=pd.DataFrame()
+    out["genome"] = cdf["genome"]
+    out["source"] = lst
+    out["secondary_cluster"] = cdf["secondary_cluster"]
+    return out
 
 ### Pipeline:
 def main():
