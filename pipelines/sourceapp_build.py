@@ -60,7 +60,7 @@ def genome_derep(args):
             subprocess.call(["cp " + genome + " " + output_dir + "/final_genomes/"], shell=True)
         try:
             subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
-                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
         except Exception as e:
             print("Error in step 3")
             print(e)
@@ -79,7 +79,7 @@ def genome_derep(args):
                             + output_dir + "/ginfo.csv >> " + output_dir + "/" + source + ".ginfo.csv; done < " + output_dir+"/"+source+".glist.txt"],shell=True,check=True)
             try:
                 subprocess.run(["dRep dereplicate " + output_dir + "/drep_" + source + " -g " + output_dir + "/" + source + ".glist.txt --S_ani " + str(ani)
-                                + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) 
+                                + " --genomeInfo " + output_dir+"/"+source+".ginfo.csv" + " --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality) 
                                 + " --skip_plots"], shell=True,check=True,stderr=subprocess.DEVNULL)
             except Exception as e:
                 print("Error in step 3")
@@ -91,7 +91,7 @@ def genome_derep(args):
         print("Flagging any cross-reactive genomes for use by sourceapp.py")
         try:
             subprocess.run(["dRep dereplicate " + output_dir + "/drep_all -g "+ output_dir + "/final_genomes/*.fna --S_ani " + str(ani) + " --genomeInfo " + output_dir 
-                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality*100) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
+                            + "/ginfo.csv --S_algorithm fastANI -p " + str(threads) + " -comp " + str(quality) + " --skip_plots"],shell=True,check=True,stderr=subprocess.DEVNULL)
         except Exception as e:
             print("Error in step 3")
             print(e)
