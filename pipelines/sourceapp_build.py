@@ -33,7 +33,7 @@ def genome_selection(args):
     gdf = pd.read_csv(output_dir + "/checkm2/quality_report.tsv", sep="\t").iloc[:, 0:3]
     gdf.iloc[:, 0] = gdf.iloc[:, 0] + ".fna"
     gdf = gdf[(gdf.iloc[:, 1]) - 5 * (gdf.iloc[:, 2]) >= quality]
-    sdf = pd.read_csv(args["source_associations"], sep="\t")
+    sdf = pd.read_csv(args["source_associations"], sep="\t",header=None)
 
     for genome in sdf.iloc[:, 0]:  # if a genome is NOT in the good quality list, remove it from source info
         if not gdf.iloc[:, 0].str.contains(genome).any():
