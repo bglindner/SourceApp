@@ -32,7 +32,7 @@ def genome_selection(args):
     output_dir = args["output_name"]
     gdf = pd.read_csv(output_dir + "/checkm2/quality_report.tsv", sep="\t").iloc[:, 0:3]
     gdf.iloc[:, 0] = gdf.iloc[:, 0] + ".fna"
-    gdf = gdf[(gdf.iloc[:, 1]/100) - 5 * (gdf.iloc[:, 2]/100) >= quality]
+    gdf = gdf[(gdf.iloc[:, 1]) - 5 * (gdf.iloc[:, 2]) >= quality]
     sdf = pd.read_csv(args["source_associations"], sep="\t")
 
     for genome in sdf.iloc[:, 0]:  # if a genome is NOT in the good quality list, remove it from source info
@@ -225,10 +225,10 @@ def main():
     )
     parser.add_argument(
         '-q', '--genome-quality',
-        help="Aggregate quality score threshold for accepting input genomes (float, 0.5 default)",
+        help="Aggregate quality score threshold for accepting input genomes (float, 50 default)",
         metavar="",
         type=float,
-        default=0.5,
+        default=50,
         required=False
     )
     parser.add_argument(
