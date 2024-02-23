@@ -68,7 +68,9 @@ def genome_derep(args):
         print("no-dereplication has been called, which may result in some genomes from the same source being erroneously flagged as cross-reactive.")
         print("Flagging any cross-reactive genomes for use by sourceapp.py") 
         new_sdf = flag_crx(output_dir)
-        new_sdf.to_csv(output_dir + "/sources.txt",index=False,names=names=["genome","source","cluster","crx"],mode="w")
+        new_sdf.to_csv(output_dir + "/sources.txt",sep="\t",index=False,mode="w")
+
+    
     else:
         for source in sources:  # if we want to maintain crx genomes, then only dereplicate within sources (thus we'll run dRep N times)
             print("Processing genomes tagged with source: " + source)
@@ -97,7 +99,7 @@ def genome_derep(args):
             print(e)
             sys.exit()
         new_sdf = flag_crx(output_dir)
-        new_sdf.to_csv(output_dir + "/sources.txt",index=False,names=["genome","source","cluster","crx"],mode="w")
+        new_sdf.to_csv(output_dir + "/sources.txt",sep="\t",index=False,mode="w")
 
 def build_database(args):
     output_dir = args["output_name"]
@@ -173,13 +175,20 @@ def flag_crx(workdir):
 
     lst = []
     for x in range(len(cdf["genome"])):
+        slst=[]
         genome = cdf["genome"].iloc[x]
         clust = cdf["secondary_cluster"].iloc[x]
         ind = cdf[cdf["secondary_cluster"]==clust].index
         if len(ind) == 1:
             lst.append(sdf[sdf["genome"]==genome]["source"].iloc[0])
         else:
-            lst.append(sdf[sdf["genome"]==genome]["source"].iloc[0]+"_crx")
+            for y in range(len(cdf.loc[ind]["genome"])):
+                name = cdf.loc[ind]["genome"].iloc[y]
+                slst.append(sdf[sdf["genome"]==name]["source"].iloc[0])
+            if len(set(slst)) > 1:
+                lst.append(sdf[sdf["genome"]==genome]["source"].iloc[0]+"_crx")
+            else:
+                lst.append(sdf[sdf["genome"]==genome]["source"].iloc[0])
     out=pd.DataFrame()
     out["genome"] = cdf["genome"]
     out["source"] = lst
@@ -188,7 +197,7 @@ def flag_crx(workdir):
     lst = []
     for clust in out["secondary_cluster"]:
         tmp = out[out["secondary_cluster"] == clust]["source"]
-        lst.append(",".join(tmp))
+        lst.append(",".join(set(tmp)))
     out["crx"] = lst
     
     return out
