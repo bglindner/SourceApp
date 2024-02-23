@@ -102,11 +102,18 @@ def genome_derep(args):
 def build_database(args):
     output_dir = args["output_name"]
 
+    # rename genomes
+    filenames = new_sdf.iloc[:,0]
+    for filename in filenames:
+        genome = os.path.splitext(filename)[0]
+        Fasta_rename_sequence(output_dir + "/final_genomes/" + filename, genome, output_dir)
+    
     # concatenate genomes
     subprocess.run(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True,check=True)
 
     # build gdef.txt
     subprocess.run(["grep '>' " + output_dir + "/database.fna > " + output_dir + "/contigs.txt"], shell=True,check=True)
+    
     gdef = build_gdef(output_dir)
     gdef.to_csv(output_dir + "/gdef.txt", index=False, header=None, sep="\t")
 
@@ -143,8 +150,8 @@ def read_fasta(fp):
             seq.append(line)
     if name: yield (name, ''.join(seq))
 
-def Fasta_rename_sequences(infile, prefix):
-    outfile = prefix + '.rename'
+def Fasta_rename_sequences(infile, prefix, workdir):
+    outfile = workdir + "/" + prefix + '.rename'
     with open(infile, 'r+') as f, open(outfile, 'w') as o:
         i = 1
         for name, seq in read_fasta(f):
@@ -170,9 +177,9 @@ def flag_crx(workdir):
         clust = cdf["secondary_cluster"].iloc[x]
         ind = cdf[cdf["secondary_cluster"]==clust].index
         if len(ind) == 1:
-            lst.append(sdf.iloc[i]["source"])
+            lst.append(sdf.iloc[x]["source"])
         else:
-            lst.append(sdf.iloc[i]["source"]+"_crx")
+            lst.append(sdf.iloc[x]["source"]+"_crx")
     out=pd.DataFrame()
     out["genome"] = cdf["genome"]
     out["source"] = lst
