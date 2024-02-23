@@ -177,9 +177,9 @@ def flag_crx(workdir):
         clust = cdf["secondary_cluster"].iloc[x]
         ind = cdf[cdf["secondary_cluster"]==clust].index
         if len(ind) == 1:
-            lst.append(sdf.iloc[x]["source"])
+            lst.append(sdf[sdf["genome"]==genome]["source"])
         else:
-            lst.append(sdf.iloc[x]["source"]+"_crx")
+            lst.append(sdf[sdf["genome"]==genome]["source"]+"_crx")
     out=pd.DataFrame()
     out["genome"] = cdf["genome"]
     out["source"] = lst
