@@ -307,13 +307,6 @@ def main():
 
     print("Step 03: assessing database redundancy with dRep")
     genome_derep(args)
-
-    # collect representative genomes and rename them
-    dir=[output_dir + "/final_genomes"] 
-    for genome in os.listdir(dir[0]):
-        if genome.endswith(".fna"):
-            prefix=os.path.splitext(genome)[0]
-            Fasta_rename_sequences([output_dir + "/final_genomes/" + genome][0], prefix)
     
     print("Step 04: indexing database for BWA mem")
     build_database(args)
