@@ -105,6 +105,7 @@ def build_database(args):
     output_dir = args["output_name"]
 
     # rename genomes
+    new_sdf = pd.read_csv(output_dir + "/sources.txt",sep="\t",header=0)
     filenames = new_sdf.iloc[:,0]
     for filename in filenames:
         genome = os.path.splitext(filename)[0]
