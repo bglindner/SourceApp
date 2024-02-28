@@ -109,7 +109,7 @@ def build_database(args):
     filenames = new_sdf.iloc[:,0]
     for filename in filenames:
         genome = os.path.splitext(filename)[0]
-        Fasta_rename_sequences(output_dir + "/final_genomes/" + filename, genome, output_dir)
+        fasta_rename_sequences(output_dir + "/final_genomes/" + filename, genome, output_dir)
     
     # concatenate genomes
     subprocess.run(["cat " + output_dir + "/final_genomes/*.fna >> " + output_dir + "/database.fna"], shell=True,check=True)
@@ -153,7 +153,7 @@ def read_fasta(fp):
             seq.append(line)
     if name: yield (name, ''.join(seq))
 
-def Fasta_rename_sequences(infile, prefix, workdir):
+def fasta_rename_sequences(infile, prefix, workdir):
     outfile = workdir + "/" + prefix + '.rename'
     with open(infile, 'r+') as f, open(outfile, 'w') as o:
         i = 1
