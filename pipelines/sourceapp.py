@@ -239,7 +239,7 @@ def main():
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
     if os.path.isdir(args['output_dir']):
-        print('Warning: Output directory already exists. Exiting . . .')
+        print('Error: Output directory already exists. Exiting . . .')
         sys.exit()
     else:
         os.mkdir(args['output_dir'])
