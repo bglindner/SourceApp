@@ -139,7 +139,7 @@ def read_filter(args):
 def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
-    sourcedict = read_source(args['sourceapp_database'].replace('/','') + '/sources.txt')
+    sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         df = pd.read_csv(args['output_dir'][:-1] + '/mappings_filtered.txt', header=0, sep='\t')
@@ -171,14 +171,6 @@ def summarize(args):
     return portions
 
 ### Helper functions:
-def read_source(file): # helper function to read in the source dictionary stored by sourceapp_build.py
-    dic = {}
-    with open(file) as fh:
-        for line in fh:
-            key, val = line.rstrip().split()
-            dic[key] = val
-    return dic
-
 def get_geq(args):
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         file = args['output_dir'][:-1] + '/geq.txt'
