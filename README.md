@@ -32,7 +32,7 @@ mamba create -n sourceapp_build --file path/to/SourceApp/dependencies/sourceapp_
 
 # pip install one additional dependency
 mamba activate sourceapp
-pip install MicrobeCensus-SourceApp
+pip install MicrobeCensus-SourceApp==1.1.2
 
 # test your environments:
 python path/to/SourceApp/pipelines/sourceapp.py -h
