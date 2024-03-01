@@ -13,14 +13,9 @@ import pandas as pd
 def read_trim(args):
     fwd=args['input_files'].split(',')[0]
     rev=args['input_files'].split(',')[1]
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        outdir = args['output_dir'][:-1]
-        html = args['output_dir'][:-1] + '/fastp_summary.html'
-        json = args['output_dir'][:-1] + '/fastp_summary.json'
-    else:
-        outdir = args['output_dir']
-        html = args['output_dir'] + '/fastp_summary.html'
-        json = args['output_dir'] + '/fastp_summary.json'
+    outdir=args['output_dir']
+    html=outdir+'/fastp_summary.html'
+    json=outdir+'/fastp_summary.json'
     out1=outdir+'/reads.1.fastq'
     out2=outdir+'/reads.2.fastq'
     threads=args['threads']
@@ -39,10 +34,7 @@ def read_trim(args):
 
 def geq_estimation(args):
     threads=str(args['threads'])
-    if args['output_dir'][-1] == '/':  # in the event user provides trailing '/'
-        outdir = args['output_dir'][:-1]
-    else:
-        outdir = args['output_dir']
+    outdir = args['output_dir']
     fwd=outdir+'/reads.1.fastq'
     rev=outdir+'/reads.2.fastq'
     inputs=fwd + ',' + rev
@@ -63,14 +55,8 @@ def read_map(args):
     threads=args['threads']
     fwd=args['input_files'].split(',')[0]
     rev=args['input_files'].split(',')[1]
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output = args['output_dir'][:-1] + '/mappings.bam'
-    else:
-        output = args['output_dir'] + '/mappings.bam'
-    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
-        database = args['sourceapp_database'][:-1] + '/database' # this is the prefix created by sourceapp_build.py when indexing
-    else:
-        database = args['sourceapp_database'] + '/database'
+    output = args['output_dir'] + '/mappings.bam'
+    database = args['sourceapp_database'] + '/database'
     print("Running read mapping...")
     print("This can take a while.")
     try:
@@ -81,23 +67,13 @@ def read_map(args):
     # bwa follows optional arguments and then positional required arguments
 
 def read_filter(args):
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        bam = args['output_dir'][:-1] + '/mappings.bam'
-    else:
-        bam = args['output_dir'] + '/mappings.bam'
-    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
-        gdef = args['sourceapp_database'][:-1] + '/gdef.txt' # this is a file describing which contigs belong to each genome as prepared by sourceapp_build.py
-    else:
-        gdef = args['sourceapp_database'] + '/gdef.txt'
-    #gdef is a two col TSV with genome_name'\t'contig_name
+    bam = args['output_dir'] + '/mappings.bam'
+    gdef = args['sourceapp_database'] + '/gdef.txt'
     pid=args['percent_identity']
     qcov=args['query_coverage']
     threads=args['threads']
     trunc=args['limit_threshold']
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output = args['output_dir'][:-1] + '/mappings_filtered.txt'
-    else:
-        output = args['output_dir'] + '/mappings_filtered.txt'
+    output = args['output_dir'] + '/mappings_filtered.txt'
     nolimits=args['no_limits'] # if passed by the user, is true.
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
@@ -141,10 +117,7 @@ def summarize(args):
     usegeq=args['use_geq']
     sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        df = pd.read_csv(args['output_dir'][:-1] + '/mappings_filtered.txt', header=0, sep='\t')
-    else:
-        df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
+    df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
     portions=[]
     if usegeq:
         geq = get_geq(args)
@@ -172,10 +145,7 @@ def summarize(args):
 
 ### Helper functions:
 def get_geq(args):
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        file = args['output_dir'][:-1] + '/geq.txt'
-    else:
-        file = args['output_dir'] + '/geq.txt'
+    file = args['output_dir'] + '/geq.txt'
     with open(file) as fh:
         for index, line in enumerate(fh):
             if index == 12:
@@ -262,6 +232,12 @@ def main():
             )
     args=vars(parser.parse_args())
 
+    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
+        args['output_dir'] = args['output_dir'][:-1]
+
+    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
+        args['sourceapp_database'] = args['sourceapp_database'][:-1]
+        
     if os.path.isdir(args['output_dir']):
         print('Warning: Output directory already exists. Exiting . . .')
         sys.exit()
