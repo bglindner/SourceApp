@@ -179,12 +179,6 @@ def main():
 
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
-        
-    if os.path.isdir(args['output_dir']):
-        print('Error: Output directory already exists. Exiting . . .')
-        sys.exit()
-    else:
-        os.mkdir(args['output_dir'])
 
     print('Beginning step 4: filtering of read mappings')
     read_filter(args)
