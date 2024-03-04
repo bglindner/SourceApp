@@ -12,23 +12,13 @@ import pandas as pd
 ### Core functions:
 
 def read_filter(args):
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        bam = args['output_dir'][:-1] + '/mappings.bam'
-    else:
-        bam = args['output_dir'] + '/mappings.bam'
-    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
-        gdef = args['sourceapp_database'][:-1] + '/gdef.txt' # this is a file describing which contigs belong to each genome as prepared by sourceapp_build.py
-    else:
-        gdef = args['sourceapp_database'] + '/gdef.txt'
-    #gdef is a two col TSV with genome_name'\t'contig_name
+    bam = args['output_dir'] + '/mappings.bam'
+    gdef = args['sourceapp_database'] + '/gdef.txt'
     pid=args['percent_identity']
     qcov=args['query_coverage']
     threads=args['threads']
     trunc=args['limit_threshold']
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output = args['output_dir'][:-1] + '/mappings_filtered.txt'
-    else:
-        output = args['output_dir'] + '/mappings_filtered.txt'
+    output = args['output_dir'] + '/mappings_filtered.txt'
     nolimits=args['no_limits'] # if passed by the user, is true.
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
@@ -54,7 +44,7 @@ def read_filter(args):
             try:
                 subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
                             " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
-                            " -o "+output+" --trim-min "+str(trunc)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
             except Exception as e:
                 print('Error in step 4: filtering of read mappings. Exiting . . .')
                 sys.exit()
@@ -62,7 +52,7 @@ def read_filter(args):
             try:
                 subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
                             " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output+" --trim-min "+str(trunc)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
             except Exception as e:
                 print('Error in step 4: filtering of read mappings. Exiting . . .')
                 sys.exit()
@@ -70,12 +60,9 @@ def read_filter(args):
 def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
-    sourcedict = read_source(args['sourceapp_database'].replace('/','') + '/sources.txt')
-    sources = list(set(sourcedict.values()))
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        df = pd.read_csv(args['output_dir'][:-1] + '/mappings_filtered.txt', header=0, sep='\t')
-    else:
-        df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
+    sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
+    sources = sorted(list(set(sourcedict.values())))
+    df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
     portions=[]
     if usegeq:
         geq = get_geq(args)
@@ -102,19 +89,8 @@ def summarize(args):
     return portions
 
 ### Helper functions:
-def read_source(file): # helper function to read in the source dictionary stored by sourceapp_build.py
-    dic = {}
-    with open(file) as fh:
-        for line in fh:
-            key, val = line.rstrip().split()
-            dic[key] = val
-    return dic
-
 def get_geq(args):
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        file = args['output_dir'][:-1] + '/geq.txt'
-    else:
-        file = args['output_dir'] + '/geq.txt'
+    file = args['output_dir'] + '/geq.txt'
     with open(file) as fh:
         for index, line in enumerate(fh):
             if index == 12:
@@ -129,15 +105,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter
         )
     parser.add_argument(
-        '-i', '--input-dir',
-        help='Path to an output directory from a previous "sourceapp.py" run',
+        '-i', '--output-dir',
+        help='Path to output directory of a SourceApp.py run',
         metavar='',
-        type=str, 
+        type=str,
         required=True
         )
     parser.add_argument(
-        '-o', '--output-file',
-        help='Path to the desired output directory',
+        '-o', '--out-file',
+        help='Path to desired output (SourceApp will append ".tune.csv")',
         metavar='',
         type=str,
         required=True
@@ -195,24 +171,35 @@ def main():
         )
     args=vars(parser.parse_args())
 
-    print('Beginning step 1: filtering of read mappings')
+    print("SourceApp tune")
+    print(args)
+
+    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
+        args['output_dir'] = args['output_dir'][:-1]
+
+    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
+        args['sourceapp_database'] = args['sourceapp_database'][:-1]
+        
+    if os.path.isdir(args['output_dir']):
+        print('Error: Output directory already exists. Exiting . . .')
+        sys.exit()
+    else:
+        os.mkdir(args['output_dir'])
+
+    print('Beginning step 4: filtering of read mappings')
     read_filter(args)
 
-    print('Beginning step 2: results summarization')
+    print('Beginning step 5: results summarization')
     results = summarize(args)
     print(results)
     print(results.__class__)
     output_table = pd.DataFrame(results)
 
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output_table.to_csv(args['output_dir'][-1]+'/results.csv', index=False, header=["Source","Portion"])
-    else:
-        output_table.to_csv(args['output_dir']+'/results.csv', index=False, header=["Source","Portion"])
+    output_table.to_csv(args['out_file']+'.tune.csv', index=False, header=["Source","Portion"])
 
-    print('The following results printed to results.csv in output directory:')
     print(output_table)
-
-    print('Thank you for using SourceApp.')
+    print('Results have been saved in user-specified output CSV')
+    print('Thank you for using SourceApp tune.')
 
 if __name__ == "__main__":
     main()
