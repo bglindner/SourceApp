@@ -150,9 +150,9 @@ def main():
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
 
     limit_threshold = [0, 0.05, 0.1, 0.15] # 4
-    query_coverage = [0.5,0.6,0.7,0.8,0.9] # 5
+    query_coverage = [0.3,0.5,0.7,0.9] # 4
     percent_identity = [0.89,0.91,0.93,0.95,0.97,0.99] # 6
-    # n = 4*5*6 = 120 runs/ea
+    # n = 4*5*6 = 96 runs/ea
 
     i=0
     for l in limit_threshold:
@@ -173,7 +173,7 @@ def main():
                 col2.loc[len(col2)]=p
                 total_out['iteration '+str(i+1)] = col2
                 i = i + 1
-                print(i, " / 120 iterations finished")
+                print(i, " / 96 iterations finished")
                 print(total_out)
                 print("\n")
 
