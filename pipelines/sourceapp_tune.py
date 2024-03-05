@@ -73,9 +73,9 @@ def summarize(args):
                 gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
             geq_frac = gsum/geq
             portions.append([source,geq_frac])
-        sourceApp = pd.DataFrame(portions, columns=['Source','Portion'])
-        if sourceApp['Portion'].sum() > 1:
-            sourceApp['Portion'] = sourceApp['Portion']/sourceApp['Portion'].sum()
+        portions = pd.DataFrame(portions, columns=['Source','Portion'])
+        if portions['Portion'].sum() > 1:
+            portions['Portion'] = portions['Portion']/portions['Portion'].sum()
             print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.')
             print('It is recommended to re-run SourceApp without the --use-geq flag to examine what percentage of reads are recovered. If the value is <~90%, then GEQ-based normalization may not be robust for this dataset.')
     else:
@@ -159,11 +159,8 @@ def main():
         for q in query_coverage:
             for p in percent_identity:
                 read_filter(args, l, q, p)
-                out = summarize(args)
-                results = pd.DataFrame(out)
+                results = summarize(args)
                 if i == 0:
-                    print(results)
-                    print("\n")
                     total_out = pd.DataFrame()
                     col1 = results['Source']
                     col1.loc[len(col1)] = 'limit_threshold'
@@ -171,13 +168,12 @@ def main():
                     col1.loc[len(col1)] = 'percent_identity'
                     total_out['Source'] = col1
                 if i > 0:
-                    print(results)
                     print("\n")
                 col2=results['Portion']
                 col2.loc[len(col2)]=l
                 col2.loc[len(col2)]=q
                 col2.loc[len(col2)]=p
-                total_out['iteration '+i] = col2
+                total_out['iteration '+str(i+1)] = col2
                 i = i + 1
                 print(i, " / 120 iterations finished")
                 print(total_out)
