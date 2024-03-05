@@ -181,8 +181,8 @@ def main():
                 print(i, " / 120 iterations finished")
                 print(total_out)
 
-print(total_out)
-total_out.to_csv(args['out_file']+'.tune.csv',index=False)
+    print(total_out)
+    total_out.to_csv(args['out_file']+'.tune.csv',index=False)
                 
 if __name__ == "__main__":
     main()
