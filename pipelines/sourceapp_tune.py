@@ -149,21 +149,36 @@ def main():
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
 
-    limit_threshold = [0.05,0.1,0.15]
-    query_coverage = [0.5,0.7,0.9]
-    percent_identity = [0.9,0.95,0.96,0.99]
-    
+    limit_threshold = [0, 0.05, 0.1, 0.15] # 4
+    query_coverage = [0.5,0.6,0.7,0.8,0.9] # 5
+    percent_identity = [0.89,0.91,0.93,0.95,0.97,0.99] # 6
+    # n = 4*5*6 = 120 runs/ea
+
+    i=0
     for l in limit_threshold:
         for q in query_coverage:
             for p percent_identity:
                 read_filter(args, l, q, p):
                 results = summarize(args)
-                print("limit threshold:", l)
-                print("query coverage:", q)
-                print("percent identity:", p)
-                output_table = pd.DataFrame(results)
-                print(output_table)
-                print("\n")
+                if i == 0:
+                    print(results)
+                    print("\n")
+                    total_out = pd.DataFrame()
+                    col1 = results['Source']
+                    col1.loc[len(col1)] = 'limit_threshold'
+                    col1.loc[len(col1)] = 'query_coverage'
+                    col1.loc[len(col1)] = 'percent_identity'
+                    total_out['Source'] = col1
+                if i > 0:
+                    print(results)
+                    print("\n")
+                col2=results['Portion']
+                col2.loc[len(col2)]=l
+                col2.loc[len(col2)]=q
+                col2.loc[len(col2)]=p
+                total_out['iteration '+i] = col2
+                i = i + 1
+                print(i, " / 120 iterations finished")
                 
 if __name__ == "__main__":
     main()
