@@ -11,18 +11,18 @@ import pandas as pd
 
 ### Core functions:
 
-def read_filter(args):
-    bam = args['output_dir'] + '/mappings.bam'
+def read_filter(args, limit_threshold, query_coverage, percent_identity):
+    bam = args['sourceapp_outdir'] + '/mappings.bam'
     gdef = args['sourceapp_database'] + '/gdef.txt'
-    pid=args['percent_identity']
-    qcov=args['query_coverage']
+    pid=percent_identity
+    qcov=query_coverage
     threads=args['threads']
-    trunc=args['limit_threshold']
-    output = args['output_dir'] + '/mappings_filtered.txt'
-    nolimits=args['no_limits'] # if passed by the user, is true.
+    trunc=limit_threshold
+    output = args['sourceapp_outdir'] + '/mappings_filtered.txt'
+
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
-    if trunc == 0 or nolimits: # if -l 0 or --no-limits was passed
+    if trunc == 0: # if -l 0 or --no-limits was passed
         if usegeq:
             try:
                 subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
@@ -62,7 +62,7 @@ def summarize(args):
     usegeq=args['use_geq']
     sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
-    df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
+    df = pd.read_csv(args['sourceapp_outdir'] + '/mappings_filtered.txt', header=0, sep='\t')
     portions=[]
     if usegeq:
         geq = get_geq(args)
@@ -90,7 +90,7 @@ def summarize(args):
 
 ### Helper functions:
 def get_geq(args):
-    file = args['output_dir'] + '/geq.txt'
+    file = args['sourceapp_outdir'] + '/geq.txt'
     with open(file) as fh:
         for index, line in enumerate(fh):
             if index == 12:
@@ -105,7 +105,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter
         )
     parser.add_argument(
-        '-i', '--output-dir',
+        '-i', '--sourceapp-outdir',
         help='Path to output directory of a SourceApp.py run',
         metavar='',
         type=str,
@@ -113,7 +113,7 @@ def main():
         )
     parser.add_argument(
         '-o', '--out-file',
-        help='Path to desired output (SourceApp will append ".tune.csv")',
+        help='Path to desired output file (SourceApp will append ".tune.csv")',
         metavar='',
         type=str,
         required=True
@@ -124,30 +124,6 @@ def main():
         metavar='',
         type=str,
         required=True
-        )
-    parser.add_argument(
-        '-l', '--limit-threshold',
-        help='Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value will increase false positive rate (float; default 0.1)',
-        metavar='',
-        type=float,
-        default=0.1,
-        required=False
-        )
-    parser.add_argument(
-        '-r', '--percent-identity',
-        help='Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.95)',
-        metavar='',
-        type=float,
-        default=0.95,
-        required=False
-        )
-    parser.add_argument(
-        '-q', '--query-coverage',
-        help='Minimum fraction of read covered by an alignment between read and reference genome (float; default 0.7)',
-        metavar='',
-        type=float,
-        default=0.7,
-        required=False
         )
     parser.add_argument(
         '-t','--threads',
@@ -163,37 +139,31 @@ def main():
         action='store_true',
         required=False
         )
-    parser.add_argument(
-        '--no-limits',
-        help='Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0',
-        action='store_true',
-        required=False
-        )
     args=vars(parser.parse_args())
 
-    print("SourceApp tune")
-    print(args)
-
-    if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        args['output_dir'] = args['output_dir'][:-1]
+    print("Beginning SourceApp tune")
+    
+    if args['sourceapp_outdir'][-1] == '/': # in the event user provides trailing '/'
+        args['sourceapp_outdir'] = args['sourceapp_outdir'][:-1]
 
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
 
-    print('Beginning step 4: filtering of read mappings')
-    read_filter(args)
-
-    print('Beginning step 5: results summarization')
-    results = summarize(args)
-    print(results)
-    print(results.__class__)
-    output_table = pd.DataFrame(results)
-
-    output_table.to_csv(args['out_file']+'.tune.csv', index=False, header=["Source","Portion"])
-
-    print(output_table)
-    print('Results have been saved in user-specified output CSV')
-    print('Thank you for using SourceApp tune.')
-
+    limit_threshold = [0.05,0.1,0.15]
+    query_coverage = [0.5,0.7,0.9]
+    percent_identity = [0.9,0.95,0.96,0.99]
+    
+    for l in limit_threshold:
+        for q in query_coverage:
+            for p percent_identity:
+                read_filter(args, l, q, p):
+                results = summarize(args)
+                print("limit threshold:", l)
+                print("query coverage:", q)
+                print("percent identity:", p)
+                output_table = pd.DataFrame(results)
+                print(output_table)
+                print("\n")
+                
 if __name__ == "__main__":
     main()
