@@ -251,7 +251,7 @@ def main():
         print('Beginning step 2: GEQ estimation', flush=True)
         geq_estimation(args)
     else:
-        print('Skipping GEQ estimation', flush=True)
+        print('Skipping step 2: GEQ estimation', flush=True)
 
     print('Beginning step 3: read mapping', flush=True)
     read_map(args)
