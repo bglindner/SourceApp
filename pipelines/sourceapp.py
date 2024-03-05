@@ -247,7 +247,7 @@ def main():
     print('Beginning step 1: read trimming', flush=True)
     read_trim(args)
 
-    if args[]:
+    if args['use_geq']:
         print('Beginning step 2: GEQ estimation', flush=True)
         geq_estimation(args)
     else:
