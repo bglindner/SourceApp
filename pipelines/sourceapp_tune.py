@@ -83,7 +83,7 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + df[df['Genome']==genome]['Relative Abundance (%)'].sum()
+                gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum() 
             portions.append([source,gsum])
         portions = pd.DataFrame(portions, header=['Source', 'Portion'])
     return portions
@@ -135,7 +135,7 @@ def main():
         )
     parser.add_argument(
         '--use-geq',
-        help='Report results normalized to genome equivalents',
+        help='Report results normalized to genome equivalents -- only pass this flag if your original SourceApp run contained it.',
         action='store_true',
         required=False
         )
@@ -167,8 +167,6 @@ def main():
                     col1.loc[len(col1)] = 'query_coverage'
                     col1.loc[len(col1)] = 'percent_identity'
                     total_out['Source'] = col1
-                if i > 0:
-                    print("\n")
                 col2=results['Portion']
                 col2.loc[len(col2)]=l
                 col2.loc[len(col2)]=q
@@ -177,6 +175,7 @@ def main():
                 i = i + 1
                 print(i, " / 120 iterations finished")
                 print(total_out)
+                print("\n")
 
     print(total_out)
     total_out.to_csv(args['out_file']+'.tune.csv',index=False)
