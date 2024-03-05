@@ -179,6 +179,10 @@ def main():
                 total_out['iteration '+i] = col2
                 i = i + 1
                 print(i, " / 120 iterations finished")
+                print(total_out)
+
+print(total_out)
+total_out.to_csv(args['out_file']+'.tune.csv',index=False)
                 
 if __name__ == "__main__":
     main()
