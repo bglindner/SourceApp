@@ -141,7 +141,7 @@ def main():
         )
     args=vars(parser.parse_args())
 
-    print("Beginning SourceApp tune")
+    print("Beginning SourceApp tune", flush=True)
     
     if args['sourceapp_outdir'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_outdir'] = args['sourceapp_outdir'][:-1]
@@ -174,9 +174,9 @@ def main():
                 total_out['iteration '+str(i+1)] = col2
                 i = i + 1
                 print(i, " / 96 iterations finished")
-                print(total_out)
+                print(total_out, flush=True)
     
-    print(total_out)
+    print(total_out, flush=True)
     total_out.to_csv(args['out_file']+'.tune.csv',index=False)
                 
 if __name__ == "__main__":
