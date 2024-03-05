@@ -128,17 +128,17 @@ def summarize(args):
                 gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
             geq_frac = gsum/geq
             portions.append([source,geq_frac])
-        sourceApp = pd.DataFrame(portions, columns=['Source','Portion'])
-        if sourceApp['Portion'].sum() > 1:
-            sourceApp['Portion'] = sourceApp['Portion']/sourceApp['Portion'].sum()
-            print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.')
-            print('It is recommended to re-run SourceApp without the --use-geq flag to examine what percentage of reads are recovered. If the value is <~90%, then GEQ-based normalization may not be robust for this dataset.')
+        portions = pd.DataFrame(portions, columns=['Source','Portion'])
+        if portions['Portion'].sum() > 1:
+            portions['Portion'] = portions['Portion']/portions['Portion'].sum()
+            print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.', flush=True)
+            print('It is recommended to re-run SourceApp without the --use-geq flag to examine what percentage of reads are recovered. If the value is <~90%, then GEQ-based normalization may not be robust for this dataset.', flush=True)
     else:
         for source in sources: # if we don't normalize to GEQ, then we should just report DNA relabd.
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + df[df['Genome']==genome]['Relative Abundance (%)'].sum()
+                gsum = gsum + df[df['Genome']==genome]iloc[:,1].sum()
             portions.append([source,gsum])
         portions = pd.DataFrame(portions, header=['Source', 'Portion'])
     return portions
@@ -239,38 +239,38 @@ def main():
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
     if os.path.isdir(args['output_dir']):
-        print('Error: Output directory already exists. Exiting . . .')
+        print('Error: Output directory already exists. Exiting . . .', flush=True)
         sys.exit()
     else:
         os.mkdir(args['output_dir'])
 
-    print('Beginning step 1: read trimming')
+    print('Beginning step 1: read trimming', flush=True)
     read_trim(args)
 
-    print('Beginning step 2: GEQ estimation')
-    geq_estimation(args)
+    if args[]:
+        print('Beginning step 2: GEQ estimation', flush=True)
+        geq_estimation(args)
+    else:
+        print('Skipping GEQ estimation', flush=True)
 
-    print('Beginning step 3: read mapping')
+    print('Beginning step 3: read mapping', flush=True)
     read_map(args)
 
-    print('Beginning step 4: filtering of read mappings')
+    print('Beginning step 4: filtering of read mappings', flush=True)
     read_filter(args)
 
-    print('Beginning step 5: results summarization')
-    results = summarize(args)
-    print(results)
-    print(results.__class__)
-    output_table = pd.DataFrame(results)
+    print('Beginning step 5: results summarization', flush=True)
+    output_table = summarize(args)
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         output_table.to_csv(args['output_dir'][-1]+'/results.csv', index=False, header=["Source","Portion"])
     else:
         output_table.to_csv(args['output_dir']+'/results.csv', index=False, header=["Source","Portion"])
 
-    print('The following results printed to results.csv in output directory:')
+    print('The following results printed to results.csv in output directory:', flush=True)
     print(output_table)
 
-    print('Thank you for using SourceApp.')
+    print('Thank you for using SourceApp.', flush=True)
 
 if __name__ == "__main__":
     main()
