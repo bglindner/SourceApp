@@ -173,7 +173,7 @@ def main():
                 col2.loc[len(col2)]=p
                 total_out['iteration '+str(i+1)] = col2
                 i = i + 1
-                print(i, " / 96 iterations finished")
+                print(i, " / 96 iterations finished", flush=True)
                 print(total_out, flush=True)
     
     print(total_out, flush=True)
