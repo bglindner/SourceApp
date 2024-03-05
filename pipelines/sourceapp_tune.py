@@ -85,7 +85,7 @@ def summarize(args):
             for genome in glist:
                 gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum() 
             portions.append([source,gsum])
-        portions = pd.DataFrame(portions, header=['Source', 'Portion'])
+        portions = pd.DataFrame(portions, columns=['Source', 'Portion'])
     return portions
 
 ### Helper functions:
