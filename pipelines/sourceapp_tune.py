@@ -175,8 +175,7 @@ def main():
                 i = i + 1
                 print(i, " / 96 iterations finished")
                 print(total_out)
-                print("\n")
-
+    
     print(total_out)
     total_out.to_csv(args['out_file']+'.tune.csv',index=False)
                 
