@@ -159,7 +159,8 @@ def main():
         for q in query_coverage:
             for p in percent_identity:
                 read_filter(args, l, q, p)
-                results = summarize(args)
+                out = summarize(args)
+                results = pd.DataFrame(out)
                 if i == 0:
                     print(results)
                     print("\n")
