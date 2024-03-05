@@ -157,7 +157,7 @@ def main():
     i=0
     for l in limit_threshold:
         for q in query_coverage:
-            for p percent_identity:
+            for p in percent_identity:
                 read_filter(args, l, q, p):
                 results = summarize(args)
                 if i == 0:
