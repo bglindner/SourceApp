@@ -88,7 +88,7 @@ def main():
         )
     args=vars(parser.parse_args())
 
-    print('Scoring SourceApp ...\n')
+    print('Scoring SourceApp for sample: ' + args['sample'])
     est = pd.read_csv(args["input"],header=0,index_col=0).T
     key = pd.read_csv(args["key"],header=0,index_col=0).loc[args["sample"]]
     sources = est.columns[0:-3][0::2].tolist()
