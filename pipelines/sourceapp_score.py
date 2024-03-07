@@ -94,6 +94,12 @@ def main():
         required=True,
         default="Class"
         )
+    parser.add_argument(
+        '-r', '--relabd',
+        help='Are the input values percentages?',
+        action="store_true",
+        required=False
+        )
     args=vars(parser.parse_args())
 
     print('Scoring SourceApp for sample: ' + args['sample'])
@@ -105,6 +111,10 @@ def main():
     for source in sources:
         est_nocrx[source]=est[source]
         est_crx[source]=est[source] + est[source + "_crx"]
+
+    if args["relabd"]: 
+        est_nocrx = est_nocrx / 100
+        est_crx =  est_crx / 100
 
     print('Scoring attribution ...\n')
     sensitivity, specificity = score_att(est_nocrx, key)
