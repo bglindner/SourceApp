@@ -130,8 +130,8 @@ def main():
     est["frac_wcrx_rmse"] = rmse
 
     est["min_frac"] = key[key>0].min()
-    
-    est.to_csv(args["output"]+".scores.csv",sep=",")
+
+    est.to_csv(args["output"]+".scores.csv",sep=",",index=False)
 
 if __name__ == "__main__":
     main()
