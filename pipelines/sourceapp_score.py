@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 '''
-Scoring SourceApp tune results against a gold standard
-Note, SourceApp's default installation instructions do
-not include sklearn -- you'll want to install it 
+Scoring SourceApp tune results against a gold standard. Note, SourceApp's default
+installation instructions do not include sklearn -- you'll want to install it if 
+you want to run this workflow
 e.g., pip install scikit-learn 
-if you want to reproduce this workflow.
-------------------------------------------------------
+----------------------------------------------------------------------------------
 '''
 import argparse
 import pandas as pd
@@ -99,7 +98,7 @@ def main():
         est_nocrx[source]=est[source]
         est_crx[source]=est[source] + est[source + "_crx"]
 
-    print('\n\Scoring attribution ...\n')
+    print('Scoring attribution ...\n')
     sensitivity, specificity = score_att(est_nocrx, key)
     est["att_nocrx_sens"] = sensitivity
     est["att_nocrx_spec"] = specificity
@@ -108,7 +107,7 @@ def main():
     est["att_crx_sens"] = sensitivity
     est["att_crx_spec"] = specificity
 
-    print('\n\Scoring apportioning ...\n')
+    print('Scoring apportioning ...\n')
     mae, mse, rmse = score_app(est_nocrx, key)
     est["app_nocrx_mae"] = mae
     est["app_nocrx_mse"] = mse
@@ -119,7 +118,7 @@ def main():
     est["app_wcrx_mse"] = mse
     est["app_wcrx_rmse"] = rmse
 
-    print('\n\Scoring cell fractioning ...\n')
+    print('Scoring cell fractioning ...\n')
     mae, mse, rmse = score_frac(est_nocrx, key)
     est["frac_nocrx_mae"] = mae
     est["frac_nocrx_mse"] = mse
