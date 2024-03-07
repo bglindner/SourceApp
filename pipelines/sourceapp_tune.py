@@ -5,6 +5,7 @@ SourceApp: Python implementation of the Unix-based environmental monitoring tool
 
 import os
 import sys
+import math
 import argparse
 import subprocess
 import pandas as pd
@@ -60,6 +61,7 @@ def read_filter(args, limit_threshold, query_coverage, percent_identity):
 def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
+    correctloq=args['correct_loq']
     sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
     df = pd.read_csv(args['sourceapp_outdir'] + '/mappings_filtered.txt', header=0, sep='\t')
@@ -70,7 +72,13 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
+                if df[df['Genome'] == genome].iloc[:,1].sum() >= -1*math.log(0.9): # above LOQ
+                    gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
+                elif df[df['Genome'] == genome].iloc[:,1].sum() < -1*math.log(0.9) and df[df['Genome'] == genome].iloc[:,1].sum() > 0: # below LOQ above LOD
+                    if correctloq: # if we 
+                        gsum = gsum + -1*math.log(0.9)
+                    else:
+                        gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
             geq_frac = gsum/geq
             portions.append([source,geq_frac])
         portions = pd.DataFrame(portions, columns=['Source','Portion'])
@@ -136,6 +144,12 @@ def main():
     parser.add_argument(
         '--use-geq',
         help='Report results normalized to genome equivalents -- only pass this flag if your original SourceApp run contained it.',
+        action='store_true',
+        required=False
+        )
+    parser.add_argument(
+        '--correct-loq',
+        help='Use quantification threshold to correct truncation estimation (if not used, the value reported will be accepted, even though its known to be an underestimate; this is a rare event)',
         action='store_true',
         required=False
         )
