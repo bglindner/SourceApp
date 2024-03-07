@@ -91,7 +91,7 @@ def main():
     print('Scoring SourceApp ...\n')
     est = pd.read_csv(args["input"],header=0,index_col=0).T
     key = pd.read_csv(args["key"],header=0,index_col=0).loc[args["sample"]]
-    sources = est.index[0:-3][0::2].tolist()
+    sources = est.columns[0:-3][0::2].tolist()
     est_nocrx=pd.DataFrame()
     est_crx = pd.DataFrame()
     for source in sources:
