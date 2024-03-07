@@ -122,8 +122,8 @@ def main():
     est["att_nocrx_spec"] = specificity
     
     sensitivity, specificity = score_att(est_crx, key)
-    est["att_crx_sens"] = sensitivity
-    est["att_crx_spec"] = specificity
+    est["att_wcrx_sens"] = sensitivity
+    est["att_wcrx_spec"] = specificity
 
     print('Scoring apportioning ...\n')
     mae, mse, rmse = score_app(est_nocrx, key)
