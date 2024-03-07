@@ -89,7 +89,6 @@ def main():
         )
     args=vars(parser.parse_args())
 
-
     print('\n\Scoring SourceApp ...\n')
     est = pd.read_csv(args["input"],header=0,index_col=0).T
     key = pd.read_csv(args["key"],header=0,index_col=0).loc[args["sample"]]
@@ -99,7 +98,8 @@ def main():
     for source in sources:
         est_nocrx[source]=est[source]
         est_crx[source]=est[source] + est[source + "_crx"]
-        
+
+    print('\n\Scoring attribution ...\n')
     sensitivity, specificity = score_att(est_nocrx, key)
     est["att_nocrx_sens"] = sensitivity
     est["att_nocrx_spec"] = specificity
@@ -107,7 +107,8 @@ def main():
     sensitivity, specificity = score_att(est_crx, key)
     est["att_crx_sens"] = sensitivity
     est["att_crx_spec"] = specificity
-    
+
+    print('\n\Scoring apportioning ...\n')
     mae, mse, rmse = score_app(est_nocrx, key)
     est["app_nocrx_mae"] = mae
     est["app_nocrx_mse"] = mse
@@ -117,7 +118,8 @@ def main():
     est["app_wcrx_mae"] = mae
     est["app_wcrx_mse"] = mse
     est["app_wcrx_rmse"] = rmse
-    
+
+    print('\n\Scoring cell fractioning ...\n')
     mae, mse, rmse = score_frac(est_nocrx, key)
     est["frac_nocrx_mae"] = mae
     est["frac_nocrx_mse"] = mse
@@ -131,19 +133,6 @@ def main():
     est["min_frac"] = key[key>0].min()
     
     est.to_csv(args["output"]+".scores.csv",sep=",")
-    
-    ####
-    #           iteration0, ..., iterationN
-    # source1
-    # ...
-    # source N
-    # param1
-    # param...
-    # paramN
-    
-    est_score_nocrx
-    est_score_crx
-
 
 if __name__ == "__main__":
     main()
