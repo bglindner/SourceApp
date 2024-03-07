@@ -22,7 +22,7 @@ def score_att(est, key):
     est_abs = est.astype(bool).astype(int)
     for iteration in est_abs.index:
         tn, fp, fn, tp = confusion_matrix(key_abs, est_abs.loc[iteration]).ravel()
-        if key.sum() == 0: # i.e., if its a negative control 
+        if key.sum() == 0: # i.e., a negative control 
             sensitivity.append(0)  # how many positives were selected as positive?
             specificity.append(tn / (tn+fp))  # how many negatives are truly negative?
         else:
@@ -35,7 +35,11 @@ def score_app(est, key):
     mae = []
     mse = []
     rmse = []
-    key_app = key / key.sum()
+    
+    if key.sum() == 0: # i.e., a negative control
+        key_app = key
+    else:
+        key_app = key / key.sum()
     for iteration in est.index:
         est_app = est.loc[iteration] / est.loc[iteration].sum()
         mae.append(mean_absolute_error(key_app, est_app))     
