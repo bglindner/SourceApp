@@ -162,8 +162,9 @@ def main():
 
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
-
-    limit_threshold = [0, 0.05, 0.1, 0.15] # 4
+        
+                #TAD100, TAD98,TAD90,TAD80,TAD70
+    limit_threshold = [0, 0.01, 0.05, 0.1, 0.15] # 5
     query_coverage = [0.3,0.5,0.7,0.9] # 4
     percent_identity = [0.89,0.91,0.93,0.95,0.97,0.99] # 6
     # n = 4*5*6 = 96 runs/ea
