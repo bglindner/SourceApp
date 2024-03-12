@@ -138,7 +138,7 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
+                gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())/100
             portions.append([source,gsum])
         portions = pd.DataFrame(portions, columns=['Source', 'Portion'])
     return portions
