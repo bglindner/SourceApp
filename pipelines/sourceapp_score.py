@@ -151,5 +151,33 @@ def main():
 
     est.to_csv(args["output"]+".scores.csv",sep=",",index=False)
 
+    print("Parameter sets found for the following...", flush=True)
+    
+    row_ind = est["app_wcrx_rmse"].idxmin() 
+    print("Apportioning with crx:", flush=True)
+    print(est.loc[row_ind]["percent_identity"], flush=True)
+    print(est.loc[row_ind]["query_coverage"], flush=True)
+    print(est.loc[row_ind]["limit_threshold"], flush=True)
+
+    row_ind = est["app_nocrx_rmse"].idxmin()
+    print("Apportioning without crx:", flush=True)
+    print(est.loc[row_ind]["percent_identity"], flush=True)
+    print(est.loc[row_ind]["query_coverage"], flush=True)
+    print(est.loc[row_ind]["limit_threshold"], flush=True)
+
+    row_ind = est["frac_wcrx_rmse"].idxmin() 
+    print("Fractioning with crx:", flush=True)
+    print(est.loc[row_ind]["percent_identity"], flush=True)
+    print(est.loc[row_ind]["query_coverage"], flush=True)
+    print(est.loc[row_ind]["limit_threshold"], flush=True)
+
+    row_ind = est["frac_nocrx_rmse"].idxmin() 
+    print("Fractioning without crx:", flush=True)
+    print(est.loc[row_ind]["percent_identity"], flush=True)
+    print(est.loc[row_ind]["query_coverage"], flush=True)
+    print(est.loc[row_ind]["limit_threshold"], flush=True)
+    
+    est.min
+
 if __name__ == "__main__":
     main()
