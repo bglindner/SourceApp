@@ -138,10 +138,10 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
-                gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())/100
+                gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
             portions.append([source,gsum])
         portions = pd.DataFrame(portions, columns=['Source', 'Portion'])
-    return portions
+    return (portions/100)
 
 ### Helper functions:
 def get_geq(args):
