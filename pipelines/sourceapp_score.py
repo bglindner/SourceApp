@@ -149,6 +149,8 @@ def main():
 
     est["min_frac"] = key[key>0].min()
 
+    est["sample"] = args["sample"]
+
     est.to_csv(args["output"]+".scores.csv",sep=",",index=False)
 
     print("Parameter sets found for the following...", flush=True)
