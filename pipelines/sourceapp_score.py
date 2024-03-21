@@ -151,7 +151,12 @@ def main():
 
     est["sample"] = args["sample"]
 
-    est.to_csv(args["output"]+".scores.csv",sep=",",index=False)
+    indlst = []
+    for x in range(len(est)):
+        indlst.append("iteration"+str(x))
+
+    est.index = indlst
+    est.to_csv(args["output"]+".scores.csv",sep=",",index=True)
 
     print("Parameter sets found for the following...", flush=True)
     
