@@ -108,18 +108,31 @@ def main():
     sources = est.columns[0:-3][0::2].tolist()
     est_nocrx=pd.DataFrame()
     est_crx = pd.DataFrame()
+    est_mix = pd.DataFrame()
     for source in sources:
         est_nocrx[source]=est[source]
         est_crx[source]=est[source] + est[source + "_crx"]
+        lst = []
+        for row in range(len(est[source])):
+            if est[source].iloc[row] > 0:
+                lst.append(est[source].iloc[row] + est[source + "_crx"].iloc[row])
+            else:
+                lst.append(est[source].iloc[row])
+        est_mix[source] = lst
 
     if args["relabd"]: 
         est_nocrx = est_nocrx / 100
         est_crx =  est_crx / 100
+        est_mix = est_mix / 100
 
     print('Scoring attribution ...\n')
     sensitivity, specificity = score_att(est_nocrx, key)
     est["att_nocrx_sens"] = sensitivity
     est["att_nocrx_spec"] = specificity
+
+    sensitivity, specificity = score_att(est_mix, key)
+    est["att_mx_sens"] = sensitivity
+    est["att_mx_spec"] = specificity
     
     sensitivity, specificity = score_att(est_crx, key)
     est["att_wcrx_sens"] = sensitivity
@@ -130,6 +143,11 @@ def main():
     est["app_nocrx_mae"] = mae
     est["app_nocrx_mse"] = mse
     est["app_nocrx_rmse"] = rmse
+
+    mae, mse, rmse = score_app(est_mix, key)
+    est["app_mx_mae"] = mae
+    est["app_mx_mse"] = mse
+    est["app_mx_rmse"] = rmse
     
     mae, mse, rmse = score_app(est_crx, key)
     est["app_wcrx_mae"] = mae
@@ -141,12 +159,18 @@ def main():
     est["frac_nocrx_mae"] = mae
     est["frac_nocrx_mse"] = mse
     est["frac_nocrx_rmse"] = rmse
+
+    mae, mse, rmse = score_frac(est_mix, key)
+    est["frac_mx_mae"] = mae
+    est["frac_mx_mse"] = mse
+    est["frac_mx_rmse"] = rmse
     
     mae, mse, rmse = score_frac(est_crx, key)
     est["frac_wcrx_mae"] = mae
     est["frac_wcrx_mse"] = mse
     est["frac_wcrx_rmse"] = rmse
 
+    
     est["min_frac"] = key[key>0].min()
 
     est["sample"] = args["sample"]
@@ -158,31 +182,31 @@ def main():
     est.index = indlst
     est.to_csv(args["output"]+".scores.csv",sep=",",index=True)
 
-    print("Parameter sets found for the following...", flush=True)
+    #print("Parameter sets found for the following...", flush=True)
     
-    row_ind = est["app_wcrx_rmse"].idxmin() 
-    print("Apportioning with crx:", flush=True)
-    print(est.loc[row_ind]["percent_identity"], flush=True)
-    print(est.loc[row_ind]["query_coverage"], flush=True)
-    print(est.loc[row_ind]["limit_threshold"], flush=True)
+    #row_ind = est["app_wcrx_rmse"].idxmin() 
+    #print("Apportioning with crx:", flush=True)
+    #print(est.loc[row_ind]["percent_identity"], flush=True)
+    #print(est.loc[row_ind]["query_coverage"], flush=True)
+    #print(est.loc[row_ind]["limit_threshold"], flush=True)
 
-    row_ind = est["app_nocrx_rmse"].idxmin()
-    print("Apportioning without crx:", flush=True)
-    print(est.loc[row_ind]["percent_identity"], flush=True)
-    print(est.loc[row_ind]["query_coverage"], flush=True)
-    print(est.loc[row_ind]["limit_threshold"], flush=True)
+    #row_ind = est["app_nocrx_rmse"].idxmin()
+    #print("Apportioning without crx:", flush=True)
+    #print(est.loc[row_ind]["percent_identity"], flush=True)
+    #print(est.loc[row_ind]["query_coverage"], flush=True)
+    #print(est.loc[row_ind]["limit_threshold"], flush=True)
 
-    row_ind = est["frac_wcrx_rmse"].idxmin() 
-    print("Fractioning with crx:", flush=True)
-    print(est.loc[row_ind]["percent_identity"], flush=True)
-    print(est.loc[row_ind]["query_coverage"], flush=True)
-    print(est.loc[row_ind]["limit_threshold"], flush=True)
+    #row_ind = est["frac_wcrx_rmse"].idxmin() 
+    #print("Fractioning with crx:", flush=True)
+    #print(est.loc[row_ind]["percent_identity"], flush=True)
+    #print(est.loc[row_ind]["query_coverage"], flush=True)
+    #print(est.loc[row_ind]["limit_threshold"], flush=True)
 
-    row_ind = est["frac_nocrx_rmse"].idxmin() 
-    print("Fractioning without crx:", flush=True)
-    print(est.loc[row_ind]["percent_identity"], flush=True)
-    print(est.loc[row_ind]["query_coverage"], flush=True)
-    print(est.loc[row_ind]["limit_threshold"], flush=True)
+    #row_ind = est["frac_nocrx_rmse"].idxmin() 
+    #print("Fractioning without crx:", flush=True)
+    #print(est.loc[row_ind]["percent_identity"], flush=True)
+    #print(est.loc[row_ind]["query_coverage"], flush=True)
+    #print(est.loc[row_ind]["limit_threshold"], flush=True)
     
     est.min
 
