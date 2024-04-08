@@ -140,8 +140,8 @@ def summarize(args):
             for genome in glist:
                 gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
             portions.append([source,gsum])
-        portions = pd.DataFrame(portions, columns=['Source', 'Portion'])
-    return (portions/100)
+        portions = pd.DataFrame(portions, columns=['Source', 'Fraction'])
+    return (portions/100)    
 
 ### Helper functions:
 def get_geq(args):
@@ -152,6 +152,22 @@ def get_geq(args):
                 censusline = line.split()
     output = float(censusline[1])
     return output
+
+def clean(table, thresh):
+    sources = table.index[~table.index.str.contains("_crx")]
+    df_att = table.loc[sources]
+    df_att.drop("environmental",inplace=True)
+    df_att.where(df_att >= thresh, 0, inplace=True)
+    df_app = df_att.copy()
+    df_att.where(df_att <= 0, 1, inplace=True)
+    df_att.drop("human",inplace=True)
+    for source in sources.drop("environmental"):
+        if not df_app.loc[source].iloc[0] == 0:
+            df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
+    df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
+    df_app.drop("human",inplace=True)
+    df_app = df_app/df_app.sum()
+    return df_app, df_att
 
 ### Pipeline:
 def main():
@@ -186,6 +202,14 @@ def main():
         metavar='',
         type=float,
         default=0.1,
+        required=False
+        )
+    parser.add_argument(
+        '-f', '--min-frac',
+        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)',
+        metavar='',
+        type=float,
+        default=0.0001,
         required=False
         )
     parser.add_argument(
@@ -263,9 +287,11 @@ def main():
     output_table = summarize(args)
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
-        output_table.to_csv(args['output_dir'][-1]+'/results.csv', index=False, header=["Source","Portion"])
+        output_table.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Fraction"])
     else:
-        output_table.to_csv(args['output_dir']+'/results.csv', index=False, header=["Source","Portion"])
+        output_table.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Fraction"])
+
+    att, app = summarize(output_table, args['min_frac'])
 
     print('The following results printed to results.csv in output directory:', flush=True)
     print(output_table)
