@@ -153,7 +153,7 @@ def get_geq(args):
     output = float(censusline[1])
     return output
 
-def clean(table, thresh):
+def clean_output(table, thresh):
     sources = table.index[~table.index.str.contains("_crx")]
     df_att = table.loc[sources]
     df_att.drop("environmental",inplace=True)
@@ -286,12 +286,11 @@ def main():
     print('Beginning step 5: results summarization', flush=True)
     output_table = summarize(args)
 
-    att, app = clean(output_table, args['min_frac'])
-
+    app, att = clean_output(output_table, args['min_frac'])
 
     output_table.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Fraction"])
-    att.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Attribution"])
-    app.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Portion"])
+    att.to_csv(args['output_dir']+'/attributions.csv', index=False, header=["Source","Presence"])
+    app.to_csv(args['output_dir']+'/apportions.csv', index=False, header=["Source","Portion"])
 
     print('The following results printed to results.csv in output directory:', flush=True)
     print(output_table)
