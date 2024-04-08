@@ -286,12 +286,16 @@ def main():
     print('Beginning step 5: results summarization', flush=True)
     output_table = summarize(args)
 
+    att, app = summarize(output_table, args['min_frac'])
+
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         output_table.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Fraction"])
+        att.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Attribution"])
+        app.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Portion"])
     else:
-        output_table.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Fraction"])
-
-    att, app = summarize(output_table, args['min_frac'])
+        output_table.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Fraction"])
+        att.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Attribution"])
+        app.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Portion"])
 
     print('The following results printed to results.csv in output directory:', flush=True)
     print(output_table)
