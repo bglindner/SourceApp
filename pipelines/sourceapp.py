@@ -140,7 +140,7 @@ def summarize(args):
             for genome in glist:
                 gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
             portions.append([source,gsum])
-        portions = pd.DataFrame(portions, columns=['Source', 'Fraction'], index=sources)
+        portions = pd.DataFrame(portions, columns=['Source', 'Fraction'])
     return portions
 
 ### Helper functions:
@@ -285,12 +285,13 @@ def main():
 
     print('Beginning step 5: results summarization', flush=True)
     output_table = summarize(args)
+    output_table.set_index("Source", inplace=True)
 
     app, att = clean_output(output_table, args['min_frac'])
 
-    output_table.to_csv(args['output_dir']+'/raw_results.csv', index=False, header=["Source","Fraction"])
-    att.to_csv(args['output_dir']+'/attributions.csv', index=False, header=["Source","Presence"])
-    app.to_csv(args['output_dir']+'/apportions.csv', index=False, header=["Source","Portion"])
+    output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction"])
+    att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Presence"])
+    app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
 
     print('The following results printed to results.csv in output directory:', flush=True)
     print(output_table)
