@@ -134,14 +134,14 @@ def summarize(args):
             print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.', flush=True)
             print('It is recommended to re-run SourceApp without the --use-geq flag to examine what percentage of reads are recovered. If the value is <~90%, then GEQ-based normalization may not be robust for this dataset.', flush=True)
     else:
-        for source in sources: # if we don't normalize to GEQ, then we should just report DNA relabd.
+        for source in sources: # if we don't normalize to GEQ, then we should just report DNA relabd. checkM reports relative abundances as ff.fff
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
                 gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
             portions.append([source,gsum])
         portions = pd.DataFrame(portions, columns=['Source', 'Fraction'])
-    return (portions/100)    
+    return portions
 
 ### Helper functions:
 def get_geq(args):
