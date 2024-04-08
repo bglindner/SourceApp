@@ -286,7 +286,7 @@ def main():
     print('Beginning step 5: results summarization', flush=True)
     output_table = summarize(args)
 
-    att, app = summarize(output_table, args['min_frac'])
+    att, app = clean(output_table, args['min_frac'])
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         output_table.to_csv(args['output_dir'][-1]+'/raw_results.csv', index=False, header=["Source","Fraction"])
