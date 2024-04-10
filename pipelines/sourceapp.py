@@ -166,8 +166,9 @@ def clean_output(table, thresh):
             df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
     df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
     df_app.drop("human",inplace=True)
+    df_frac = df_app.copy()
     df_app = df_app/df_app.sum()
-    return df_app, df_att
+    return df_app, df_att, df_frac
 
 ### Pipeline:
 def main():
@@ -287,11 +288,12 @@ def main():
     output_table = summarize(args)
     output_table.set_index("Source", inplace=True)
 
-    app, att = clean_output(output_table, args['min_frac'])
+    app, att, frac = clean_output(output_table, args['min_frac'])
 
     output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction"])
     att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Presence"])
     app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
+    frac.to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"])
 
     print('The following results printed to raw_results.csv in output directory:', flush=True)
     print(output_table)
