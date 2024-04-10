@@ -293,7 +293,7 @@ def main():
     att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Presence"])
     app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
 
-    print('The following results printed to results.csv in output directory:', flush=True)
+    print('The following results printed to raw_results.csv in output directory:', flush=True)
     print(output_table)
 
     print('Thank you for using SourceApp.', flush=True)
