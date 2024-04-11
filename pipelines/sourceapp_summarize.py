@@ -15,7 +15,7 @@ import pandas as pd
 def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
-    sourcedict = pd.read_csv(args['sourceapp_database'].replace('/','') + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
+    sourcedict = pd.read_csv(args['sourceapp_database'] + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
     df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
     portions=[]
