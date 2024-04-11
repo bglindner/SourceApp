@@ -177,8 +177,8 @@ def clean_output(table, args):
             df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
             
     if addhum:
-        if df_app.loc["wastewater"] > 0:
-            df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
+        if df_app.loc["wastewater"].iloc[0] > 0:
+            df_app.loc["wastewater"].iloc[0] = df_app.loc["wastewater"].iloc[0] + df_app.loc["human"].iloc[0]
         df_app.drop("human",inplace=True)
         
     df_frac = df_app.copy()
@@ -312,7 +312,7 @@ def main():
 
     app, att, frac = clean_output(output_table, args)
 
-    output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction"])
+    output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction","Detected Genomes","Total Genomes"])
     att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"])
     app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
     frac.to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"])
