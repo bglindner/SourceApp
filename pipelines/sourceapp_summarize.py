@@ -80,18 +80,20 @@ def clean_output(table, args):
             plst.append(df.loc[source]["Attributal"] + df.loc[source]["Crx Attributal"])
         else:
             plst.append(0)
-    df["Portion"] = plst
+            
+    df["Total Fraction"] = plst
+    
     if args["drop_env"]: # default is false; thus, if the keyword "environmental" doesn't appear in the index (because a custom db is used) all is good
         df.drop("environmental",inplace=True)
-    df["Portion"] = df["Portion"]/df["Portion"].sum()
 
-    ###  clean up
     if args["aggregate_human"]: # default is false; thus, if the keywords "human" | "wastewater" don't appear in the index (because a custom db is used) all is good
-        df.loc["wastewater"]["Portion"] = df.loc["wastewater"]["Portion"] + df.loc["human"]["Attributal"]
-        df.loc["wastewater"]["Crx Total Genomes"] = df.loc["wastewater"]["Crx Total Genomes"] + df.loc["human"]["Total Genomes"]
-        df.loc["wastewater"]["Crx Detected Genomes"] = df.loc["wastewater"]["Crx Detected Genomes"] + df.loc["human"]["Detected Genomes"]
-        dr.drop("human",inplace=True)
+        df.loc["wastewater","Total Fraction"] = df.loc["wastewater","Total Fraction"] + df.loc["human","Attributal"]
+        df.loc["wastewater","Crx Total Genomes"] = df.loc["wastewater","Crx Total Genomes"] + df.loc["human","Total Genomes"]
+        df.loc["wastewater","Crx Detected Genomes"] = df.loc["wastewater","Crx Detected Genomes"] + df.loc["human","Detected Genomes"]
+        df.drop("human",inplace=True)
 
+    df["Portion"] = df["Total Fraction"]/df["Total Fraction"].sum()
+    
     df["Attributal"].where(df["Attributal"] <= 0, 1, inplace=True)
     df["Crx Attributal"].where(df["Crx Attributal"] <= 0, 1, inplace=True)
     
@@ -150,7 +152,7 @@ def main():
         )
     parser.add_argument(
         '--drop-env',
-        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if you're apportioning fecal contamination.',
+        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if apportioning fecal contamination.',
         action='store_true',
         required=False
         )    
@@ -180,15 +182,15 @@ def main():
         sys.exit()
 
     print('Summarizing SourceApp results.', flush=True)
-    output_table = summarize(args)
-    output_table.set_index("Source", inplace=True)
+    table = summarize(args)
+    table.set_index("Source", inplace=True)
 
-    raw, app, att, frac = clean_output(output_table, args)
+    df = clean_output(table, args)
 
-    raw.to_csv(args['output_dir']+'/results.csv', index=True, header=raw.columns)
-    att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"])
-    app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
-    frac.to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"])
+    df.to_csv(args['output_dir']+'/results.csv', index=True, header=raw.columns)
+    df["Attributal"].to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"]) # ignoring crx signal for attribution
+    df["Portion"].to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"]) # portions rely on attribution
+    df[["Total Fraction"]].to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"]) # fractions rely on attribution
 
     print('The following results printed to results.csv in output directory:', flush=True)
     print(raw)
