@@ -193,7 +193,7 @@ def main():
     df[["Total Fraction"]].to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"]) # fractions rely on attribution
 
     print('The following results printed to results.csv in output directory:', flush=True)
-    print(raw)
+    print(df)
 
     print('Thank you for using SourceApp.', flush=True)
 
