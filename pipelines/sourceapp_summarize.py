@@ -73,16 +73,16 @@ def clean_output(table, args):
     df["Attributal"].where(df["Attributal"] >= args["min_frac"], 0, inplace=True) # Apply limit
     df["Crx Attributal"] = df["Crx Fraction"] 
     df["Crx Attributal"].where(df["Crx Attributal"] >= args["min_frac"], 0, inplace=True) # Apply limit
-    
-    df["Portion"] = df["Fraction"]
-    df["Portion"].where(df["Portion"] >= args["min_frac"], 0, inplace=True) # apply limit
+
+    plst=[]
     for source in sources:
         if df.loc[source]["Attributal"] > 0:
-            df.loc[source]["Portion"] = df.loc[source]["Attributal"] + df.loc[source]["Crx Attributal"]
+            plst.append(df.loc[source]["Attributal"] + df.loc[source]["Crx Attributal"])
         else:
-            df.loc[source]["Portion"] = 0
+            plst.append(0)
+    df["Portion"] = plst
     if args["drop_env"]: # default is false; thus, if the keyword "environmental" doesn't appear in the index (because a custom db is used) all is good
-        df.drop("environmental",inplace=True
+        df.drop("environmental",inplace=True)
     df["Portion"] = df["Portion"]/df["Portion"].sum()
 
     ###  clean up
