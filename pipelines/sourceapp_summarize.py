@@ -90,6 +90,13 @@ def main():
         required=True
         )
     parser.add_argument(
+        '-d', '--sourceapp-database',
+        help='Path to directory containing a SourceApp formatted database. Default database available for download or produced de novo as the output directory from sourceapp_build.py',
+        metavar='',
+        type=str,
+        required=True
+        )
+    parser.add_argument(
         '-f', '--min-frac',
         help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)',
         metavar='',
@@ -121,6 +128,9 @@ def main():
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         args['output_dir'] = args['output_dir'][:-1]
+    
+    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
+        args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
     if os.path.isdir(args['output_dir']):
         print('SourceApp output directory found. Searching for read mapping results. . .', flush=True)
