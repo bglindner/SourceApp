@@ -154,7 +154,7 @@ def main():
         print('SourceApp output directory not found. Exiting.', flush=True)
         sys.exit()
 
-    print('Summarizing run SourceApp results.', flush=True)
+    print('Summarizing SourceApp results.', flush=True)
     output_table = summarize(args)
     output_table.set_index("Source", inplace=True)
 
