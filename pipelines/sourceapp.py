@@ -153,21 +153,29 @@ def get_geq(args):
     output = float(censusline[1])
     return output
 
-def clean_output(table, thresh):
+def clean_output(table, thresh, args):
+    thresh =  args['min_frac']
+    addhum = args["aggregate_human"] # if true, add human signal to wastwater
     sources = table.index[~table.index.str.contains("_crx")]
+    
     df_att = table.loc[sources]
     df_att.drop("environmental",inplace=True)
     df_att.where(df_att >= thresh, 0, inplace=True)
     df_app = df_att.copy()
     df_att.where(df_att <= 0, 1, inplace=True)
-    df_att.drop("human",inplace=True)
+    
     for source in sources.drop("environmental"):
         if not df_app.loc[source].iloc[0] == 0:
             df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
-    df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
-    df_app.drop("human",inplace=True)
+            
+    if addhum:
+        if df_app.loc["wastewater"] > 0:
+            df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
+        df_app.drop("human",inplace=True)
+        
     df_frac = df_app.copy()
     df_app = df_app/df_app.sum()
+    
     return df_app, df_att, df_frac
 
 ### Pipeline:
@@ -244,6 +252,12 @@ def main():
         required=False
         )
     parser.add_argument(
+        '--aggregate-human',
+        help='Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.',
+        action='store_true',
+        required=False
+        )
+    parser.add_argument(
         '--no-limits',
         help='Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0',
         action='store_true',
@@ -288,10 +302,10 @@ def main():
     output_table = summarize(args)
     output_table.set_index("Source", inplace=True)
 
-    app, att, frac = clean_output(output_table, args['min_frac'])
+    app, att, frac = clean_output(output_table, args)
 
     output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction"])
-    att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Presence"])
+    att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"])
     app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
     frac.to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"])
 
