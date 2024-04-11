@@ -134,7 +134,7 @@ def main():
             print('Exiting.', flush=True)
     else:
         print('SourceApp output directory not found. Exiting.', flush=True)
-       sys.exit()
+        sys.exit()
 
     print('Summarizing run SourceApp results.', flush=True)
     output_table = summarize(args)
