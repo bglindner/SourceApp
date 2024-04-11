@@ -54,38 +54,49 @@ def summarize(args):
     return fractions
 
 def clean_output(table, args):
-    thresh =  args['min_frac']
-    addhum = args["aggregate_human"] # if true, add human signal to wastwater
     sources = table.index[~table.index.str.contains("_crx")]
     
-    df_att = table.loc[sources]
-    df_att.drop("environmental",inplace=True)
-    df_att.where(df_att >= thresh, 0, inplace=True)
-    df_app = df_att.copy()
-    df_att.where(df_att <= 0, 1, inplace=True)
+    df = table.loc[sources]
 
-    if addhum:
-        table.loc["human_crx"].iloc[0] = 0
-        table.loc["human_crx"].iloc[1] = 0
+    dlst=[]
+    tlst=[]
+    flst=[]
+    for source in sources:
+        flst.append(table.loc[source+"_crx"]["Fraction"])
+        dlst.append(table.loc[source+"_crx"]["Detected Genomes"])
+        tlst.append(table.loc[source+"_crx"]["Total Genomes"])
+    df["Crx Fraction"] = flst
+    df["Crx Detected Genomes"] = dlst
+    df["Crx Total Genomes"] = tlst
+
+    df["Attributal"] = df["Fraction"] # Attribution is based on specific signal.
+    df["Attributal"].where(df["Attributal"] >= args["min_frac"], 0, inplace=True) # Apply limit
+    df["Crx Attributal"] = df["Crx Fraction"] 
+    df["Crx Attributal"].where(df["Crx Attributal"] >= args["min_frac"], 0, inplace=True) # Apply limit
     
-    for source in sources.drop("environmental"):
-        if not df_app.loc[source].iloc[0] == 0:
-            df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
-            df_app.loc[source].iloc[1] = df_app.loc[source].iloc[1] + table.loc[source+"_crx"].iloc[1]
-            df_app.loc[source].iloc[2] = df_app.loc[source].iloc[2] + table.loc[source+"_crx"].iloc[2]
-            
-    if addhum:
-        if df_app.loc["wastewater"].iloc[0] > 0:
-            df_app.loc["wastewater"].iloc[0] = df_app.loc["wastewater"].iloc[0] + df_app.loc["human"].iloc[0]
-            df_app.loc["wastewater"].iloc[1] = df_app.loc["wastewater"].iloc[1] + df_app.loc["human"].iloc[1]
-            df_app.loc["wastewater"].iloc[2] = df_app.loc["wastewater"].iloc[2] + df_app.loc["human"].iloc[2]
-        df_app.drop("human",inplace=True)
+    df["Portion"] = df["Fraction"]
+    df["Portion"].where(df["Portion"] >= args["min_frac"], 0, inplace=True) # apply limit
+    for source in sources:
+        if df.loc[source]["Attributal"] > 0:
+            df.loc[source]["Portion"] = df.loc[source]["Attributal"] + df.loc[source]["Crx Attributal"]
+        else:
+            df.loc[source]["Portion"] = 0
+    if args["drop_env"]: # default is false; thus, if the keyword "environmental" doesn't appear in the index (because a custom db is used) all is good
+        df.drop("environmental",inplace=True
+    df["Portion"] = df["Portion"]/df["Portion"].sum()
+
+    ###  clean up
+    if args["aggregate_human"]: # default is false; thus, if the keywords "human" | "wastewater" don't appear in the index (because a custom db is used) all is good
+        df.loc["wastewater"]["Portion"] = df.loc["wastewater"]["Portion"] + df.loc["human"]["Attributal"]
+        df.loc["wastewater"]["Crx Total Genomes"] = df.loc["wastewater"]["Crx Total Genomes"] + df.loc["human"]["Total Genomes"]
+        df.loc["wastewater"]["Crx Detected Genomes"] = df.loc["wastewater"]["Crx Detected Genomes"] + df.loc["human"]["Detected Genomes"]
+        dr.drop("human",inplace=True)
+
+    df["Attributal"].where(df["Attributal"] <= 0, 1, inplace=True)
+    df["Crx Attributal"].where(df["Crx Attributal"] <= 0, 1, inplace=True)
+    
+    return df
         
-    df_frac = df_app.copy()
-    df_app.iloc[0] = df_app.iloc[0]/df_app.iloc[0].sum()
-    
-    return df_app, df_att, df_frac
-
 def get_geq(args):
     file = args['output_dir'] + '/geq.txt'
     with open(file) as fh:
@@ -138,6 +149,12 @@ def main():
         required=False
         )
     parser.add_argument(
+        '--drop-env',
+        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if you're apportioning fecal contamination.',
+        action='store_true',
+        required=False
+        )    
+    parser.add_argument(
         '--aggregate-human',
         help='Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.',
         action='store_true',
@@ -166,15 +183,15 @@ def main():
     output_table = summarize(args)
     output_table.set_index("Source", inplace=True)
 
-    app, att, frac = clean_output(output_table, args)
+    raw, app, att, frac = clean_output(output_table, args)
 
-    output_table.to_csv(args['output_dir']+'/raw_results.csv', index=True, header=["Fraction","Detected Genomes","Total Genomes"])
+    raw.to_csv(args['output_dir']+'/results.csv', index=True, header=raw.columns)
     att.to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"])
     app.to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"])
     frac.to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"])
 
-    print('The following results printed to raw_results.csv in output directory:', flush=True)
-    print(output_table)
+    print('The following results printed to results.csv in output directory:', flush=True)
+    print(raw)
 
     print('Thank you for using SourceApp.', flush=True)
 
