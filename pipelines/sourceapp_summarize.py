@@ -84,7 +84,7 @@ def main():
         )
     parser.add_argument(
         '-o', '--output-dir',
-        help='Path to the desired output directory',
+        help='Path to an existing SourceApp output directory',
         metavar='',
         type=str,
         required=True
