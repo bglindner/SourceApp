@@ -63,18 +63,26 @@ def clean_output(table, args):
     df_att.where(df_att >= thresh, 0, inplace=True)
     df_app = df_att.copy()
     df_att.where(df_att <= 0, 1, inplace=True)
+
+    if addhum:
+        table.loc["human_crx"].iloc[0] = 0
+        table.loc["human_crx"].iloc[1] = 0
     
     for source in sources.drop("environmental"):
         if not df_app.loc[source].iloc[0] == 0:
             df_app.loc[source].iloc[0] = df_app.loc[source].iloc[0] + table.loc[source+"_crx"].iloc[0]
+            df_app.loc[source].iloc[1] = df_app.loc[source].iloc[1] + table.loc[source+"_crx"].iloc[1]
+            df_app.loc[source].iloc[2] = df_app.loc[source].iloc[2] + table.loc[source+"_crx"].iloc[2]
             
     if addhum:
         if df_app.loc["wastewater"].iloc[0] > 0:
-            df_app.loc["wastewater"] = df_app.loc["wastewater"] + df_app.loc["human"]
+            df_app.loc["wastewater"].iloc[0] = df_app.loc["wastewater"].iloc[0] + df_app.loc["human"].iloc[0]
+            df_app.loc["wastewater"].iloc[1] = df_app.loc["wastewater"].iloc[1] + df_app.loc["human"].iloc[1]
+            df_app.loc["wastewater"].iloc[2] = df_app.loc["wastewater"].iloc[2] + df_app.loc["human"].iloc[2]
         df_app.drop("human",inplace=True)
         
     df_frac = df_app.copy()
-    df_app = df_app/df_app.sum()
+    df_app.iloc[0] = df_app.iloc[0]/df_app.iloc[0].sum()
     
     return df_app, df_att, df_frac
 
