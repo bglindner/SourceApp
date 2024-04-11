@@ -187,7 +187,7 @@ def main():
 
     df = clean_output(table, args)
 
-    df.to_csv(args['output_dir']+'/results.csv', index=True, header=raw.columns)
+    df.to_csv(args['output_dir']+'/results.csv', index=True, header=df.columns)
     df["Attributal"].to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"]) # ignoring crx signal for attribution
     df["Portion"].to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"]) # portions rely on attribution
     df[["Total Fraction"]].to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"]) # fractions rely on attribution
