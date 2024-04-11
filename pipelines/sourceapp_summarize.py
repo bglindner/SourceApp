@@ -126,10 +126,13 @@ def main():
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
     if os.path.isdir(args['output_dir']):
-      print('SourceApp output directory found. Searching for read mapping results. . .', flush=True)
-      if os.path.isfile(args['output_dir']+'/mappings_filtered.txt'):
-        print('Filtered read mapping results found. Proceeding.', flush=True)
-    else
+        print('SourceApp output directory found. Searching for read mapping results. . .', flush=True)
+        if os.path.isfile(args['output_dir']+'/mappings_filtered.txt'):
+            print('Filtered read mapping results found. Proceeding.', flush=True)
+        else:
+            print('Cannot locate filtered read mapping results. Did SourceApp complete successfully?', flush=True)
+            print('Exiting.', flush=True)
+    else:
         print('SourceApp output directory not found. Exiting.', flush=True)
        sys.exit()
 
