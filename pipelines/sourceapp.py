@@ -123,14 +123,19 @@ def summarize(args):
         geq = get_geq(args)
         for source in sources:
             gsum=0
+            gcount=0
+            nount=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
+                if df[df['Genome']==genome].iloc[:,1].sum()>0:
+                    gcount = gcount + 1
+                ncount=ncount+1
                 gsum = gsum + df[df['Genome']==genome].iloc[:,1].sum()
             geq_frac = gsum/geq
-            portions.append([source,geq_frac])
-        portions = pd.DataFrame(portions, columns=['Source','Portion'])
-        if portions['Portion'].sum() > 1:
-            portions['Portion'] = portions['Portion']/portions['Portion'].sum()
+            fractions.append([source,geq_frac,gcount,ncount])
+        fractions = pd.DataFrame(fractions, columns=['Source','Fraction','Detected Genomes','Total Genomes'])
+        if fractions['Fraction'].sum() > 1:
+            fractions['Fraction'] = fractions['Fraction']/fractions['Fraction'].sum()
             print('Warning: the sum of GEQ-based relative abundances exceeds 1. Source portions have been rescaled.', flush=True)
             print('It is recommended to re-run SourceApp without the --use-geq flag to examine what percentage of reads are recovered. If the value is <~90%, then GEQ-based normalization may not be robust for this dataset.', flush=True)
     else:
@@ -138,10 +143,13 @@ def summarize(args):
             gsum=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
+                if df[df['Genome']==genome].iloc[:,1].sum()>0:
+                    gcount = gcount + 1
+                ncount=ncount+1
                 gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
-            portions.append([source,gsum])
-        portions = pd.DataFrame(portions, columns=['Source', 'Fraction'])
-    return portions
+            fractions.append([source,gsum,gcount,ncount])
+        fractions = pd.DataFrame(fractions, columns=['Source', 'Fraction','Detected Genomes','Total Genomes'])
+    return fractions
 
 ### Helper functions:
 def get_geq(args):
