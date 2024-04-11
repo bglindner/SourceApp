@@ -76,6 +76,15 @@ def clean_output(table, thresh, args):
     
     return df_app, df_att, df_frac
 
+def get_geq(args):
+    file = args['output_dir'] + '/geq.txt'
+    with open(file) as fh:
+        for index, line in enumerate(fh):
+            if index == 12:
+                censusline = line.split()
+    output = float(censusline[1])
+    return output
+
 ### Pipeline:
 def main():
     parser = argparse.ArgumentParser(
