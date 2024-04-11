@@ -161,7 +161,7 @@ def get_geq(args):
     output = float(censusline[1])
     return output
 
-def clean_output(table, thresh, args):
+def clean_output(table, args):
     thresh =  args['min_frac']
     addhum = args["aggregate_human"] # if true, add human signal to wastwater
     sources = table.index[~table.index.str.contains("_crx")]
