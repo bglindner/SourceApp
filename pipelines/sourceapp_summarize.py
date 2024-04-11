@@ -24,7 +24,7 @@ def summarize(args):
         for source in sources:
             gsum=0
             gcount=0
-            nount=0
+            ncount=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
                 if df[df['Genome']==genome].iloc[:,1].sum()>0:
@@ -41,6 +41,8 @@ def summarize(args):
     else:
         for source in sources: # if we don't normalize to GEQ, then we should just report DNA relabd. checkM reports relative abundances as ff.fff
             gsum=0
+            gcount=0
+            ncount=0
             glist = [key for key, val in sourcedict.items() if val == source]
             for genome in glist:
                 if df[df['Genome']==genome].iloc[:,1].sum()>0:
