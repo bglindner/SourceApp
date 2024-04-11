@@ -121,9 +121,6 @@ def main():
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
         args['output_dir'] = args['output_dir'][:-1]
-
-    if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
-        args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
     if os.path.isdir(args['output_dir']):
         print('SourceApp output directory found. Searching for read mapping results. . .', flush=True)
