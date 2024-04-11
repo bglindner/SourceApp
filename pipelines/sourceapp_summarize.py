@@ -18,7 +18,7 @@ def summarize(args):
     sourcedict = pd.read_csv(args['sourceapp_database'] + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
     df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
-    portions=[]
+    fractions=[]
     if usegeq:
         geq = get_geq(args)
         for source in sources:
