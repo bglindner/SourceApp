@@ -307,12 +307,6 @@ def main():
         action='store_true',
         required=False
         )    
-    parser.add_argument(
-        '--aggregate-human',
-        help='Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.',
-        action='store_true',
-        required=False
-        )
     args=vars(parser.parse_args())
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
