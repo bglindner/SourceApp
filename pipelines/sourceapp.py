@@ -148,7 +148,7 @@ def summarize(args):
                 if df[df['Genome']==genome].iloc[:,1].sum()>0:
                     gcount = gcount + 1
                 ncount=ncount+1
-                gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())
+                gsum = gsum + (df[df['Genome']==genome].iloc[:,1].sum())/100
             fractions.append([source,gsum,gcount,ncount])
         fractions = pd.DataFrame(fractions, columns=['Source', 'Fraction','Detected Genomes','Total Genomes'])
     return fractions
