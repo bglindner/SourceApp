@@ -170,9 +170,9 @@ Those finding SourceApp useful are encouraged to also cite these excellent works
 
 Nayfach, S.; Pollard, K. S. Average Genome Size Estimation Improves Comparative Metagenomics and Sheds Light on the Functional Ecology of the Human Microbiome. Genome Biology 2015, 16 (1), 51. https://doi.org/10.1186/s13059-015-0611-7.
 
-### BWA-MEM2
+### bwa mem
 
-Vasimuddin, Md.; Misra, S.; Li, H.; Aluru, S. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. In 2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS); 2019; pp 314–324. https://doi.org/10.1109/IPDPS.2019.00041.
+Li, H.; Durbin, R. Fast and Accurate Short Read Alignment with Burrows-Wheeler Transform. Bioinformatics 2009, 25 (14), 1754–1760. https://doi.org/10.1093/bioinformatics/btp324.
 
 ### Fastp
 
