@@ -10,7 +10,7 @@ Python implementation of the Unix-based environmental monitoring tool.
 SourceApp is in active development but we encourage interested users to give it a try ahead of publication.
 
 # Description 
-SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst multiple competing sources in short read metagenomes collected from impaired waterways. SourceApp was developed for use on Unix or Unix-like operating systemsand its implementation in Python has the same requirement.
+SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst multiple competing sources in short read metagenomes collected from impaired waterways. SourceApp was developed for use on Unix or Unix-like operating systems and its implementation in Python has the same requirement.
 
 SourceApp is designed to automate all tasks necessary to detect and quantify fecal signal in metagenomes collected from the water environment if users will simply provide gzipped copies of the raw reads in FASTQ format. SourceApp requires a database of reference genomes with known source-associations. Consequently, a database was developed in parallel with this software through systematic literature review and details on obtaining it are available below (Graham et al, _in prep_).
 
