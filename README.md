@@ -60,40 +60,39 @@ mamba clean --all
 SourceApp is primarily designed for use with a Unix-based HPC and no support is offered for deployment with alternative operating systems.
 
 ```
-usage: sourceapp.py [-h] -i  -o  -d  [-l] [-r] [-q] [-t] [--use-geq] [--no-limits] [--skip-trimming]
+usage: sourceapp.py [-h] -i  -o  -d  [-l] [-f] [-r] [-q] [-t] [--use-geq] [--aggregate-human] [--no-limits] [--skip-trimming] [--drop-env]
 
 SourceApp: Python implementation of the Unix-based environmental monitoring tool.
 
 options:
-  -h, --help            Show this help message and exit
-  -i , --input-files    Comma-delimited path to forward and reverse metagenomic reads. Must 
-                        be in FASTQ format and gzipped (reads.1.fastq.gz,reads.2.fastq.gz)
+  -h, --help            show this help message and exit
+  -i , --input-files    Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip
   -o , --output-dir     Path to the desired output directory
   -d , --sourceapp-database 
-                        Path to directory containing a SourceApp formatted database. Default 
-                        database available for download or produced de novo as the output directory 
+                        Path to directory containing a SourceApp formatted database. Default database available for download or produced de novo as the output directory
                         from sourceapp_build.py
   -l , --limit-threshold 
-                        Sequence breadth needed to consider a genome detected. Increasing this value 
-                        will increase false negative rate. Decreasing this value will increase false 
-                        positive rate (float; default 0.1)
+                        Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value will
+                        increase false positive rate (float; default 0.1)
+  -f , --min-frac       The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)
   -r , --percent-identity 
-                        Minimum BLAST-like percent identity of alignment between read and reference 
-                        genome (float; default 0.95)
+                        Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.95)
   -q , --query-coverage 
-                        Minimum fraction of read covered by an alignment between read and reference 
-                        genome (float; default 0.7)
-  -t , --threads        Threads available to SourceApp and its subroutines
+                        Minimum fraction of read covered by an alignment between read and reference genome (float; default 0.7)
+  -t , --threads        Threads available to SourceApp
   --use-geq             Report results normalized to genome equivalents
-  --no-limits           Disable the analytical limit of detection used in estimating sequence depth.   
-                        Synonymous with -l 0
+  --aggregate-human     Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone
+                        cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.
+  --no-limits           Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0
   --skip-trimming       Disable read trimming and QC
+  --drop-env            Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if apportioning
+                        fecal contamination.
 
 ```
 
 For example:
 ```
-python sourceapp.py --use-geq -i raw_reads/reads.1.fastq.gz,raw_reads/reads.2.fastq.gz -o sourceapp_results -d path/to/SourceApp_db
+python sourceapp.py --use-geq --drop-env --aggregate-human -i raw_reads/reads.1.fastq.gz,raw_reads/reads.2.fastq.gz -o sourceapp_results -d path/to/SourceApp_db
 ```
 
 # Outputs
@@ -108,28 +107,26 @@ Examples
 SourceApp performs best when users are able to supply genomes recovered from the contaminating sources the user expects to be present. `sourceapp_build.py` allows users to provide a set of genomes which they have collected/curated and create a SourceApp database for use with the main pipeline. To do this, users should gather genomes as FASTA files in an input directory and record in a tab-separated list, the name of each genome (col1) and its fecal source (col2). From these two inputs, SourceApp will output a directory containing a database which can be passed into `sourceapp.py -d`.
 
 ```
-usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--remove-crx] [--no-dereplication] [-d] [-c]
+usage: sourceapp_build.py [-h] -i  -o  -s  [-a] [-t] [-q] [--no-dereplication] [-d] [-c]
 
 SourceApp: Python implementation of the Unix-based environmental monitoring tool.
 
-sourceapp.py requires a properly formatted reference. This script automates creation
-of such a database.
+sourceapp.py requires a properly formatted database. This script automates its creation.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -i , --input-dir      Path to directory containing input genomes (path/to/dir/*.fna)
-  -o , --output-name    Name of the database to be created. SourceApp will create an output directory in the current working directory containing the finished database with the provided string +
-                        '_SourceAppdb/'
+  -o , --output-name    Path to new directory which SourceApp should build the database in. SourceApp will create the database output directory at the specified path
+                        appended with + '_SourceAppdb/'
   -s , --source-associations 
                         Text file describing source associations of input genomes
   -a , --ani            ANI threshold for calling genome clusters
   -t , --threads        Threads available to SourceApp
   -q , --genome-quality 
-                        Aggregate quality score threshold for accepting input genomes (float, 0.5 default)
-  --remove-crx          Remove genomes found in the same cluster but belonging to different sources.
+                        Aggregate quality score threshold for accepting input genomes (float, 50 default)
   --no-dereplication    Disable genome dereplication. This will create the database using all of the provided genomes which pass quality requirements.
-  -d , --checkm2_db     Path to a local installation of the CheckM2 database (.dmnd). If not passed, SourceApp assumes you have let CheckM2 install the database in the default location
-                        (~/databases). See 'checkm2 databases -h' for more information.
+  -d , --checkm2_db     Path to a local installation of the CheckM2 database (.dmnd). If not passed, SourceApp assumes you have let CheckM2 install the database in the
+                        default location (~/databases). See 'checkm2 databases -h' for more information.
   -c , --checkm2_info   If you've already run CheckM2 yourself, path to the quality_report.tsv output.
 ```
 `sourceapp_build.py` expects the tab-separated input source association table to be structured like so (no header):
