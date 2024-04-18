@@ -16,8 +16,6 @@ SourceApp is designed to automate all tasks necessary to detect and quantify fec
 
 SourceApp reports metrics akin to prokaryotic cell fraction (when `--use-geq` is called) and has been benchmarked in laboratory trials. SourceApp was only tested on fresh fecal signal and works best when the user is able to provide supplementary reference genomes to bolster SourceApp's default genomic reference database. De novo databases can be constructed by the user with `sourceapp_build.py` and then supplied here to SourceApp in place of the default database. 
 
-For functional population proportioning in biological wastewater treatment datasets, see "WasteApp" -- the built environment extension of SourceApp's working principles (https://github.com/blindner6/WasteApp). 
-
 # Installation
 
 We are currently recommending installation with `conda` / `mamba` and aim to create a Bioconda recipe for easier user installation after publication. In the interim, the following guide should allow users to set up two environments for running SourceApp. One environment is for the main pipeline of SourceApp (`sourceapp.py`) and the other is for building your own databases (`sourceapp_build.py`). 
