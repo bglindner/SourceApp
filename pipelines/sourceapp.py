@@ -290,7 +290,7 @@ def main():
         )
     parser.add_argument(
         '--aggregate-human',
-        help='Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.',
+        help='Treat human signal as wastewater signal.',
         action='store_true',
         required=False
         )
@@ -308,7 +308,7 @@ def main():
         )
     parser.add_argument(
         '--drop-env',
-        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if apportioning fecal contamination.',
+        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it off if apportioning fecal contamination.',
         action='store_true',
         required=False
         )    
