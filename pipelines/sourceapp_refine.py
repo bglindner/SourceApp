@@ -10,61 +10,6 @@ import subprocess
 import pandas as pd
 
 ### Core functions:
-def read_trim(args):
-    fwd=args['input_files'].split(',')[0]
-    rev=args['input_files'].split(',')[1]
-    outdir=args['output_dir']
-    html=outdir+'/fastp_summary.html'
-    json=outdir+'/fastp_summary.json'
-    out1=outdir+'/reads.1.fastq'
-    out2=outdir+'/reads.2.fastq'
-    threads=args['threads']
-    skiptrim=args['skip_trimming']
-    if skiptrim:
-        print("Skipping read trimming...")
-        subprocess.run(['cp '+fwd+' '+out1])
-        subprocess.run(['cp '+rev+' '+out2])
-    else:
-        print("Running read trimming...")
-        try:
-            subprocess.run(["fastp -n 0 -l 70 --detect_adapter_for_pe -i " + fwd + " -I " + rev + " -o " + out1 + " -O " + out2 + " -w " + str(threads) + " -h " + html + " -j " + json], shell=True, check=True)
-        except Exception as e:
-            print('Error in step 1: read trimming. Exiting . . .')
-            sys.exit()
-
-def geq_estimation(args):
-    threads=str(args['threads'])
-    outdir = args['output_dir']
-    fwd=outdir+'/reads.1.fastq'
-    rev=outdir+'/reads.2.fastq'
-    inputs=fwd + ',' + rev
-    outputs=outdir+'/geq.txt'
-    usegeq=args['use_geq']
-    if usegeq:
-        print("Running GEQ estimation...")
-        try:
-            subprocess.run(["run_microbe_census.py -v -t "+ threads + " -n 10000000 "+ inputs + ' ' + outputs], shell=True, check=True)
-        except Exception as e:
-            print('Error in step 2: GEQ estimation. Exiting . . .')
-            sys.exit()
-    else:
-        print("Skipping GEQ estimation...")
-
-def read_map(args):
-    samthreads='-@'+str(args['threads'])
-    threads=args['threads']
-    fwd=args['input_files'].split(',')[0]
-    rev=args['input_files'].split(',')[1]
-    output = args['output_dir'] + '/mappings.bam'
-    database = args['sourceapp_database'] + '/database'
-    print("Running read mapping...")
-    print("This can take a while.")
-    try:
-        subprocess.run(["bwa mem -t " + str(threads) + ' ' + database + ' ' + fwd + ' ' + rev + " | samtools sort "+ samthreads + " -o " + output + " -"], shell=True, check=True)
-    except Exception as e:
-        print('Error in step 3: read mapping. Exiting . . .')
-        sys.exit()
-    # bwa follows optional arguments and then positional required arguments
 
 def read_filter(args):
     bam = args['output_dir'] + '/mappings.bam'
@@ -77,40 +22,23 @@ def read_filter(args):
     nolimits=args['no_limits'] # if passed by the user, is true.
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
-    if trunc == 0 or nolimits: # if -l 0 or --no-limits was passed
-        if usegeq:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m mean covered_bases variance "+
-                            "-o "+output], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-        else:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-    else: # if -l is nonzero and --no-limits wasn't passed
-        if usegeq:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
-                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-        else:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
+    
+    if usegeq:
+        try:
+            subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
+                        " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
+                        " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 4: filtering of read mappings. Exiting . . .')
+            sys.exit()
+    else:
+        try:
+            subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
+                        " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
+                        " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 4: filtering of read mappings. Exiting . . .')
+            sys.exit()
 
 def summarize(args):
     #produce the final dataframe and make some visuals.
@@ -237,14 +165,14 @@ def main():
         )
     parser.add_argument(
         '-d', '--sourceapp-database',
-        help='Path to directory containing a SourceApp formatted database. Default database available for download or produced de novo as the output directory from sourceapp_build.py',
+        help='Path to directory containing a SourceApp formatted database',
         metavar='',
         type=str,
         required=True
         )
     parser.add_argument(
         '-l', '--limit-threshold',
-        help='Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value will increase false positive rate (float; default 0.1)',
+        help='Sequence breadth needed to consider a genome detected (default=0.1)',
         metavar='',
         type=float,
         default=0.1,
@@ -252,7 +180,7 @@ def main():
         )
     parser.add_argument(
         '-f', '--min-frac',
-        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)',
+        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (default=0.0001)',
         metavar='',
         type=float,
         default=0.0001,
@@ -295,12 +223,6 @@ def main():
         required=False
         )
     parser.add_argument(
-        '--no-limits',
-        help='Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0',
-        action='store_true',
-        required=False
-        )
-    parser.add_argument(
         '--skip-trimming',
         help='Disable read trimming and QC',
         action='store_true',
@@ -319,24 +241,6 @@ def main():
 
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
-        
-    if os.path.isdir(args['output_dir']):
-        print('Error: Output directory already exists. Exiting . . .', flush=True)
-        sys.exit()
-    else:
-        os.mkdir(args['output_dir'])
-
-    print('Beginning step 1: read trimming', flush=True)
-    read_trim(args)
-
-    if args['use_geq']:
-        print('Beginning step 2: GEQ estimation', flush=True)
-        geq_estimation(args)
-    else:
-        print('Skipping step 2: GEQ estimation', flush=True)
-
-    print('Beginning step 3: read mapping', flush=True)
-    read_map(args)
 
     print('Beginning step 4: filtering of read mappings', flush=True)
     read_filter(args)
