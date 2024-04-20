@@ -74,7 +74,6 @@ def read_filter(args):
     threads=args['threads']
     trunc=args['limit_threshold']
     output = args['output_dir'] + '/mappings_filtered.txt'
-    nolimits=args['no_limits'] # if passed by the user, is true.
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
     
