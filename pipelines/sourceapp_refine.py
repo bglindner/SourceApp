@@ -139,6 +139,11 @@ def clean_output(table, args):
     
     df["Attributal"].where(df["Attributal"] <= 0, 1, inplace=True)
     df["Crx Attributal"].where(df["Crx Attributal"] <= 0, 1, inplace=True)
+
+    df["pid"]=args["percent_identity"]
+    df["mask"]=args["limit_threshold"]
+    df["qcov"]=args["query_coverage"]
+    df["thresh"]=args["min_frac"]
     
     return df
     
