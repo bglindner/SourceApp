@@ -77,40 +77,23 @@ def read_filter(args):
     nolimits=args['no_limits'] # if passed by the user, is true.
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
-    if trunc == 0 or nolimits: # if -l 0 or --no-limits was passed
-        if usegeq:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m mean covered_bases variance "+
-                            "-o "+output], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-        else:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-    else: # if -l is nonzero and --no-limits wasn't passed
-        if usegeq:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
-                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
-        else:
-            try:
-                subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
-                            " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
-                            " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
-            except Exception as e:
-                print('Error in step 4: filtering of read mappings. Exiting . . .')
-                sys.exit()
+    
+    if usegeq:
+        try:
+            subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
+                        " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m trimmed_mean covered_bases variance "+
+                        " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 4: filtering of read mappings. Exiting . . .')
+            sys.exit()
+    else:
+        try:
+            subprocess.run(["coverm genome -b "+bam+" --genome-definition "+gdef+" --min-read-percent-identity "+str(pid*100)+
+                        " --min-read-aligned-percent "+str(qcov*100)+" --output-format dense -t "+str(threads)+" -m relative_abundance "+
+                        " -o "+output+" --trim-min "+str(trunc*100)+" --trim-max "+str(100-(trunc*100))], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 4: filtering of read mappings. Exiting . . .')
+            sys.exit()
 
 def summarize(args):
     #produce the final dataframe and make some visuals.
@@ -237,14 +220,14 @@ def main():
         )
     parser.add_argument(
         '-d', '--sourceapp-database',
-        help='Path to directory containing a SourceApp formatted database. Default database available for download or produced de novo as the output directory from sourceapp_build.py',
+        help='Path to directory containing a SourceApp formatted database',
         metavar='',
         type=str,
         required=True
         )
     parser.add_argument(
         '-l', '--limit-threshold',
-        help='Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value will increase false positive rate (float; default 0.1)',
+        help='Sequence breadth needed to consider a genome detected (default=0.1)',
         metavar='',
         type=float,
         default=0.1,
@@ -252,7 +235,7 @@ def main():
         )
     parser.add_argument(
         '-f', '--min-frac',
-        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)',
+        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (default=0.0001)',
         metavar='',
         type=float,
         default=0.0001,
@@ -291,12 +274,6 @@ def main():
     parser.add_argument(
         '--aggregate-human',
         help='Treat human signal as wastewater signal.',
-        action='store_true',
-        required=False
-        )
-    parser.add_argument(
-        '--no-limits',
-        help='Disable the analytical limit of detection used in estimating sequence depth. Synonymous with -l 0',
         action='store_true',
         required=False
         )
