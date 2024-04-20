@@ -10,6 +10,61 @@ import subprocess
 import pandas as pd
 
 ### Core functions:
+def read_trim(args):
+    fwd=args['input_files'].split(',')[0]
+    rev=args['input_files'].split(',')[1]
+    outdir=args['output_dir']
+    html=outdir+'/fastp_summary.html'
+    json=outdir+'/fastp_summary.json'
+    out1=outdir+'/reads.1.fastq'
+    out2=outdir+'/reads.2.fastq'
+    threads=args['threads']
+    skiptrim=args['skip_trimming']
+    if skiptrim:
+        print("Skipping read trimming...")
+        subprocess.run(['cp '+fwd+' '+out1])
+        subprocess.run(['cp '+rev+' '+out2])
+    else:
+        print("Running read trimming...")
+        try:
+            subprocess.run(["fastp -n 0 -l 70 --detect_adapter_for_pe -i " + fwd + " -I " + rev + " -o " + out1 + " -O " + out2 + " -w " + str(threads) + " -h " + html + " -j " + json], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 1: read trimming. Exiting . . .')
+            sys.exit()
+
+def geq_estimation(args):
+    threads=str(args['threads'])
+    outdir = args['output_dir']
+    fwd=outdir+'/reads.1.fastq'
+    rev=outdir+'/reads.2.fastq'
+    inputs=fwd + ',' + rev
+    outputs=outdir+'/geq.txt'
+    usegeq=args['use_geq']
+    if usegeq:
+        print("Running GEQ estimation...")
+        try:
+            subprocess.run(["run_microbe_census.py -v -t "+ threads + " -n 10000000 "+ inputs + ' ' + outputs], shell=True, check=True)
+        except Exception as e:
+            print('Error in step 2: GEQ estimation. Exiting . . .')
+            sys.exit()
+    else:
+        print("Skipping GEQ estimation...")
+
+def read_map(args):
+    samthreads='-@'+str(args['threads'])
+    threads=args['threads']
+    fwd=args['input_files'].split(',')[0]
+    rev=args['input_files'].split(',')[1]
+    output = args['output_dir'] + '/mappings.bam'
+    database = args['sourceapp_database'] + '/database'
+    print("Running read mapping...")
+    print("This can take a while.")
+    try:
+        subprocess.run(["bwa mem -t " + str(threads) + ' ' + database + ' ' + fwd + ' ' + rev + " | samtools sort "+ samthreads + " -o " + output + " -"], shell=True, check=True)
+    except Exception as e:
+        print('Error in step 3: read mapping. Exiting . . .')
+        sys.exit()
+    # bwa follows optional arguments and then positional required arguments
 
 def read_filter(args):
     bam = args['output_dir'] + '/mappings.bam'
@@ -167,6 +222,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter
         )
     parser.add_argument(
+        '-i', '--input-files',
+        help='Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip',
+        metavar='',
+        type=str, 
+        required=True
+        )
+    parser.add_argument(
         '-o', '--output-dir',
         help='Path to the desired output directory',
         metavar='',
@@ -228,7 +290,7 @@ def main():
         )
     parser.add_argument(
         '--aggregate-human',
-        help='Treat human signal as wastewater signal. This will result in specific human signal being treated as cross-reactive wastewater signal. It alone cannot be used for attribution but it will contribute to apportioning if non-crossreactive wastewater signal was detected.',
+        help='Treat human signal as wastewater signal.',
         action='store_true',
         required=False
         )
@@ -246,7 +308,7 @@ def main():
         )
     parser.add_argument(
         '--drop-env',
-        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it on if apportioning fecal contamination.',
+        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it off if apportioning fecal contamination.',
         action='store_true',
         required=False
         )    
@@ -258,6 +320,24 @@ def main():
     if args['sourceapp_database'][-1] == '/': # in the event user provides trailing '/'
         args['sourceapp_database'] = args['sourceapp_database'][:-1]
         
+    if os.path.isdir(args['output_dir']):
+        print('Error: Output directory already exists. Exiting . . .', flush=True)
+        sys.exit()
+    else:
+        os.mkdir(args['output_dir'])
+
+    print('Beginning step 1: read trimming', flush=True)
+    read_trim(args)
+
+    if args['use_geq']:
+        print('Beginning step 2: GEQ estimation', flush=True)
+        geq_estimation(args)
+    else:
+        print('Skipping step 2: GEQ estimation', flush=True)
+
+    print('Beginning step 3: read mapping', flush=True)
+    read_map(args)
+
     print('Beginning step 4: filtering of read mappings', flush=True)
     read_filter(args)
 
