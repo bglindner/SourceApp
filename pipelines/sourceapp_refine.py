@@ -96,6 +96,9 @@ def get_geq(args):
     return output
     
 def clean_output(table, args):
+    if args["drop_env"]:
+        table.drop("environmental",inplace=True)
+    
     sources = table.index[~table.index.str.contains("_crx")]
     
     df = table.loc[sources]
@@ -124,9 +127,6 @@ def clean_output(table, args):
             plst.append(0)
             
     df["Total Fraction"] = plst
-    
-    if args["drop_env"]: # default is false; thus, if the keyword "environmental" doesn't appear in the index (because a custom db is used) all is good
-        df.drop("environmental",inplace=True)
 
     if args["aggregate_human"]: # default is false; thus, if the keywords "human" | "wastewater" don't appear in the index (because a custom db is used) all is good
         df.loc["wastewater","Crx Fraction"] = df.loc["wastewater","Crx Fraction"] + df.loc["human","Attributal"]
