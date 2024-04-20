@@ -115,7 +115,12 @@ def read_filter(args):
 def summarize(args):
     #produce the final dataframe and make some visuals.
     usegeq=args['use_geq']
-    sourcedict = pd.read_csv(args['sourceapp_database'] + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
+    if args["drop_env"]:
+        temp_df = pd.read_csv(args['sourceapp_database'] + '/sources.txt',sep="\t",header=0)
+        temp_df = temp_df[temp_df["crx"].str.contains("environmental_crx")==False]
+        sourcedict = temp_df.iloc[:,0:2].set_index('genome')['source'].to_dict()
+    else:
+        sourcedict = pd.read_csv(args['sourceapp_database'] + '/sources.txt',sep="\t",header=0).iloc[:,0:2].set_index('genome')['source'].to_dict()
     sources = sorted(list(set(sourcedict.values())))
     df = pd.read_csv(args['output_dir'] + '/mappings_filtered.txt', header=0, sep='\t')
     fractions=[]
