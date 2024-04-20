@@ -150,13 +150,6 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter
         )
     parser.add_argument(
-        '-i', '--input-files',
-        help='Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip',
-        metavar='',
-        type=str, 
-        required=True
-        )
-    parser.add_argument(
         '-o', '--output-dir',
         help='Path to the desired output directory',
         metavar='',
