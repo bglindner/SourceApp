@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-SourceApp refines takes the output directory from a successful sourceapp.py run and re-processes it with new parameters. Useful for avoiding running the entire pipeline when you only want to try different parameter usage.
+SourceApp: Python implementation of the Unix-based environmental monitoring tool.
+
+sourceapp_refine.py takes the output directory from a successful sourceapp.py run and re-processes it with new parameters. Useful for avoiding running the entire pipeline when you only want to try different parameter usage.
 """
 
 import os
