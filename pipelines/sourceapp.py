@@ -282,12 +282,6 @@ def main():
         required=False
         )
     parser.add_argument(
-        '--skip-trimming',
-        help='Disable read trimming and QC',
-        action='store_true',
-        required=False
-        )
-    parser.add_argument(
         '--drop-env',
         help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it off if apportioning fecal contamination.',
         action='store_true',
