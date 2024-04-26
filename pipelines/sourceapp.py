@@ -185,7 +185,8 @@ def clean_output(table, args):
 
     if args["aggregate_human"]: # default is false; thus, if the keywords "human" | "wastewater" don't appear in the index (because a custom db is used) all is good
         df.loc["wastewater","Crx Fraction"] = df.loc["wastewater","Crx Fraction"] + df.loc["human","Attributal"]
-        df.loc["wastewater","Total Fraction"] = df.loc["wastewater","Total Fraction"] + df.loc["human","Attributal"]
+        if df.loc["wastewater","Total Fraction"] > 0: # logic remains consistent: human signal is treated as crx ww 
+            df.loc["wastewater","Total Fraction"] = df.loc["wastewater","Total Fraction"] + df.loc["human","Attributal"]
         df.loc["wastewater","Crx Total Genomes"] = df.loc["wastewater","Crx Total Genomes"] + df.loc["human","Total Genomes"]
         df.loc["wastewater","Crx Detected Genomes"] = df.loc["wastewater","Crx Detected Genomes"] + df.loc["human","Detected Genomes"]
         df.drop("human",inplace=True)
