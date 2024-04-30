@@ -240,7 +240,7 @@ def main():
         )
     parser.add_argument(
         '-f', '--min-frac',
-        help='The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (default=0.0001)',
+        help='The minimum read or cell fraction a source must have to detectable and apportionable (default=0.0001)',
         metavar='',
         type=float,
         default=0.0001,
@@ -248,7 +248,7 @@ def main():
         )
     parser.add_argument(
         '-r', '--percent-identity',
-        help='Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.95)',
+        help='Minimum BLAST-like percent identity to count an alignment (float; default 0.95)',
         metavar='',
         type=float,
         default=0.95,
@@ -256,7 +256,7 @@ def main():
         )
     parser.add_argument(
         '-q', '--query-coverage',
-        help='Minimum fraction of read covered by an alignment between read and reference genome (float; default 0.7)',
+        help='Minimum fraction of read covered by an alignment between (float; default 0.7)',
         metavar='',
         type=float,
         default=0.7,
@@ -284,7 +284,7 @@ def main():
         )
     parser.add_argument(
         '--drop-env',
-        help='Discard environmental signal from final results. This can significantly impact apportioning results -- you probably want it off if apportioning fecal contamination.',
+        help='Discard environmental signal from final results.',
         action='store_true',
         required=False
         )    
