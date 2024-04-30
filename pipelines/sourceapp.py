@@ -287,7 +287,13 @@ def main():
         help='Discard environmental signal from final results.',
         action='store_true',
         required=False
-        )    
+        ) 
+    parser.add_argument(
+        '--skip-trimming',
+        help='Disable read trimming.',
+        action='store_true',
+        required=False
+        )
     args=vars(parser.parse_args())
 
     if args['output_dir'][-1] == '/': # in the event user provides trailing '/'
