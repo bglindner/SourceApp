@@ -20,7 +20,7 @@ def read_filter(args):
     qcov=args['query_coverage']
     threads=args['threads']
     trunc=args['limit_threshold']
-    output = args['output_dir'] + '/mappings_filtered.txt'
+    output = args['output_dir'] + '/mappings_filtered_' + args['output_str'] '.txt'
     usegeq=args['use_geq']
     print("Filtering read mapping results...")
     
