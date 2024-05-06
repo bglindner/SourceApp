@@ -164,6 +164,13 @@ def main():
         required=True
         )
     parser.add_argument(
+        '-z', '--output-str',
+        help='Unique name for output string',
+        metavar='',
+        type=str,
+        required=True
+        )
+    parser.add_argument(
         '-d', '--sourceapp-database',
         help='Path to directory containing a SourceApp formatted database',
         metavar='',
@@ -245,12 +252,12 @@ def main():
 
     df = clean_output(table, args)
 
-    df.to_csv(args['output_dir']+'/results.csv', index=True, header=df.columns)
-    df["Attributal"].to_csv(args['output_dir']+'/attributions.csv', index=True, header=["Detection"]) # ignoring crx signal for attribution
-    df["Portion"].to_csv(args['output_dir']+'/apportions.csv', index=True, header=["Portion"]) # portions rely on attribution
-    df[["Total Fraction"]].to_csv(args['output_dir']+'/fractions.csv', index=True, header=["Fraction"]) # fractions rely on attribution
+    df.to_csv(args['output_dir']+'/results_' + args['output_str'] + '.csv', index=True, header=df.columns)
+    df["Attributal"].to_csv(args['output_dir']+'/attributions_' + args['output_str'] + '.csv', index=True, header=["Detection"]) # ignoring crx signal for attribution
+    df["Portion"].to_csv(args['output_dir']+'/apportions_' + args['output_str'] + '.csv', index=True, header=["Portion"]) # portions rely on attribution
+    df[["Total Fraction"]].to_csv(args['output_dir']+'/fractions_' + args['output_str'] + '.csv', index=True, header=["Fraction"]) # fractions rely on attribution
 
-    print('The following results printed to results.csv in output directory:', flush=True)
+    print('The following results saved in output directory:', flush=True)
     print(df)
 
     print('Thank you for using SourceApp.', flush=True)
