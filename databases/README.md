@@ -1,6 +1,6 @@
 # SourceApp databases
 
-SourceApp requires a database to function. 
+
 
 Currently, pre-constructed databases can be found in several places:
 
