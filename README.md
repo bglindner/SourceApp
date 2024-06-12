@@ -193,10 +193,14 @@ genomeN.fna      sourceN
 ```
 For example:
 ```
-python sourceapp_build.py -i path/to/genomes/dir -o path/to/output_dir -s path/to/source_associations.tsv -d path/to/CheckM2_db/*.dmnd
+python sourceapp_build.py \
+      -i path/to/genomes/dir \
+      -o path/to/output_dir \
+      -s path/to/source_associations.tsv \
+      -d path/to/CheckM2_db/*.dmnd
 ```
 
-The output database created by `sourceapp_build.py` is the database input into `sourceapp.py`.
+The output directory created by `sourceapp_build.py` is the database input (`-d`) into `sourceapp.py`.
 
 
 # Database structure
