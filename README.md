@@ -101,7 +101,7 @@ SourceApp aims to provide information on three metrics: attribution, apportionme
 python sourceapp.py -i path/to/reads.1.fastq.gz,path/to/reads.2.fastq.gz -o path/to/output_dir -d path/to/database_dir --use-geq --aggregate-human --drop-env
 ```
 
-`sourceapp.py` will output a table of for each result (as a `.csv`) with the similar formats. Users should note the usage guidelines of the tool, as the results described in these tables can vary depending on parameter choice and flags passed. 
+`sourceapp.py` will output a table of for each result (as a `.csv`) with similar formats. Users should note the usage guidelines of the tool, as the results described in these tables can vary depending on parameter choice and flags passed. 
 
 ## Attribution
 
