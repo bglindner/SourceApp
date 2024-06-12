@@ -204,7 +204,7 @@ The output database created by `sourceapp_build.py` is the database input into `
 To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their runs (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
 
 | source | specific | crx | note |
-|--------|---|------|
+|--------|---|---|------|
 | bird | 40 | 16 | non-domesticated |
 |cat | 6 | 91 | domesticated |
 |chicken | 883 | 431 | domesticated |
