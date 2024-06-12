@@ -95,10 +95,64 @@ python sourceapp.py --use-geq --drop-env --aggregate-human -i raw_reads/reads.1.
 
 # Outputs
 
-Explanation
+SourceApp aims to provide information on three metrics: attribution, apportionment, and fractioning. If SourceApp was ran with the following:
 
-Examples
+```
+python sourceapp.py -i path/to/reads.1.fastq.gz,path/to/reads.2.fastq.gz -o path/to/output_dir -d path/to/database_dir --use-geq --aggregate-human --drop-env
+```
 
+`sourceapp.py` will output a table of for each result (as a `.csv`) with the similar formats. Users should note the usage guidelines of the tool, as the results described in these tables can vary depending on parameter choice and flags passed. 
+
+## Attribution
+
+The attribution table shows each source described in the database as the first column (`Source`) and that source's presence/absence in the second column (`Detection`).
+
+```
+Source,Detection
+bird,0
+cat,1
+chicken,0
+cow,0
+dog,0
+pig,1
+ruminant,0
+septage,0
+wastewater,1
+```
+
+## Apportionment
+
+The apportionment table shows each source described in the database as the first column (`Source`) and, as the second column (`Portion`) the portion of the total fecal signal SourceApp predicted that source contributed. All attributed sources will have non-zero portions. 
+
+```
+Source,Portion
+bird,0.0
+cat,0.600
+chicken,0.0
+cow,0.0
+dog,0.0
+pig,0.035
+ruminant,0.0
+septage,0.0
+wastewater,0.365
+```
+
+## Fractioning
+
+The fractioning table shows each source described in the database as the first column (`Source`) and then that source's predicted fraction within the sample (as c/c if `--use-geq` was passed) in the second column (`Fraction`). 
+
+```
+Source,Fraction
+bird,0.0
+cat,0.032
+chicken,0.0
+cow,0.0
+dog,0.0
+pig,0.002
+ruminant,0.0
+septage,0.0
+wastewater,0.020
+```
 
 # Database construction
 
@@ -141,23 +195,27 @@ For example:
 python sourceapp_build.py -i path/to/genomes/dir -o path/to/output_dir -s path/to/source_associations.tsv -d path/to/CheckM2_db/*.dmnd
 ```
 
+The output database created by `sourceapp_build.py` is the database input into `sourceapp.py`.
+
+
 # Database structure
 
 # Default database
 To assist users with achieving good performance from SourceApp, we have built a default database which users can download and immediately use in their runs (or to augment their own genomic datasets i.e., with `sourceapp_build.py`). This database includes entries representing the following fecal sources:
 
-| source | n sp. | note |
+| source | specific | crx | note |
 |--------|---|------|
-| bird | x | non-domesticated |
-|cat | x | domesticated |
-|chicken | x | domesticated |
-|cow | x | domesticated; bos * |
-|dog | x | domesticated |
-|human | x  | |
-|pig | x | domesticated |
-|ruminant | x |  mostly domesticated (goats and sheep) |
-|septage |x |  |
-|wastewater | x | primary and secondary |
+| bird | 40 | 16 | non-domesticated |
+|cat | 6 | 91 | domesticated |
+|chicken | 883 | 431 | domesticated |
+|cow | 19 | 24 | domesticated; bos * |
+|dog | 58 | 89 | domesticated |
+|human | 3333  | 1151 | |
+|pig | 2038 | 728 | domesticated |
+|ruminant | 725 | 33 |  mostly domesticated (goats and sheep) |
+|septage | 32 | 7 |  |
+|wastewater | 3076 | 47 | primary and secondary |
+|environmental | 6559 | 43 | freshwater |
 
 # Citations
 
