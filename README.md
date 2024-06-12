@@ -217,6 +217,16 @@ To assist users with achieving good performance from SourceApp, we have built a 
 |wastewater | 3076 | 47 | primary and secondary |
 |environmental | 6559 | 43 | freshwater |
 
+Currently, the default SourceApp database can be found on MiGA at: https://disc-genomics.uibk.ac.at/miga//projects/SourceApp
+
+Soon, this database will also be hosted on Zenodo.
+
+# Metagenomic Benchmarking Dataset
+
+Spike-in mesocosms were constructed for benchmarking the performance of SourceApp in simulated fecal contamination events. This data can be found in BioProject XXX at NCBI for users to benchmark SourceApp's performance with their own genome databases or reproduce the results we report.
+
+Note: this data is still embargo'd but will be available soon!
+
 # Citations
 
 SourceApp wraps several essential pieces of software developed by other teams. 
