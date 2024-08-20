@@ -151,6 +151,7 @@ def get_geq(args):
     return output
     
 def clean_output(table, args):
+    
     if args["drop_env"]:
         table.drop("environmental",inplace=True)
         
@@ -284,7 +285,7 @@ def main():
         )
     parser.add_argument(
         '--drop-env',
-        help='Discard environmental signal from final results.',
+        help='Discard environmental signal from final results. Do not pass this argument if the database being used lacks genomes with the environmental label.',
         action='store_true',
         required=False
         ) 
