@@ -12,7 +12,7 @@ SourceApp is in active development but we encourage interested users to give it 
 # Description 
 SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst multiple competing sources in short read metagenomes collected from impaired waterways. SourceApp was developed for use on Unix or Unix-like operating systems and its implementation in Python has the same requirement.
 
-SourceApp is designed to automate all tasks necessary to detect and quantify fecal signal in metagenomes collected from the water environment if users will simply provide gzipped copies of the raw reads in FASTQ format. SourceApp requires a database of reference genomes with known source-associations. A premade database is availabe to users and details on obtaining it are available below.
+SourceApp is designed to automate all tasks necessary to detect and quantify fecal signal in metagenomes collected from the water environment if users will simply provide gzipped copies of the raw reads in FASTQ format. SourceApp requires a database of reference genomes with known source-associations. A premade database is availabe to users and details on obtaining it are available [below](#Default-database).
 
 SourceApp reports metrics akin to prokaryotic cell fraction (when `--use-geq` is called) and has been benchmarked in laboratory trials. SourceApp was only tested on fresh fecal signal and works best when the user is able to provide supplementary reference genomes to bolster SourceApp's default genomic reference database. De novo databases can be constructed by the user with `sourceapp_build.py` and then supplied here to SourceApp in place of the default database. 
 
