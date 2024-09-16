@@ -18,6 +18,8 @@ SourceApp reports metrics akin to prokaryotic cell fraction (when `--use-geq` is
 
 We would love to hear your experience using SourceApp and any recommendations you have for improvement. Thanks for using our tool! 
 
+![image](https://github.com/user-attachments/assets/8558d0b4-567f-4c4c-885c-07af12d03d8c)
+
 # Installation
 
 We are currently recommending installation with `conda` / (micro)`mamba` and aim to create a Bioconda recipe for easier user installation after publication. In the interim, the following guide should allow users to set up two environments for running SourceApp. One environment is for the main pipeline of SourceApp (`sourceapp.py`) and the other is for building your own databases (`sourceapp_build.py`). 
