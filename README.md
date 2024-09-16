@@ -61,6 +61,8 @@ mamba clean --all
 
 `sourceapp.py` expects as input paired short read metagenomic data. The user should supply these reads as gzipped FASTQ files. No prior adapter trimming or QC is necessary as SourceApp will automate read trimming with `fastp` but the user can disable this step with `--skip-trimming`. In addition to short reads, SourceApp needs a genomic database specifically formatted for use by the tool. This can be created by SourceApp from genomes provided by the user with `sourceapp_build.py` or using the default database described below. Users should specify the location of an output directory for results to be written to. 
 
+![image](https://github.com/user-attachments/assets/545d7e88-caae-46d9-927f-c2a940962c6e)
+
 SourceApp is primarily designed for use with a Unix-based HPC and no support is offered for deployment with alternative operating systems.
 
 ```
