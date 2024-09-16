@@ -224,11 +224,11 @@ To assist users with achieving good performance from SourceApp, we have built a 
 |wastewater | 3076 | 47 | primary and secondary |
 |environmental | 6559 | 43 | freshwater |
 
-Currently, the default SourceApp database can be found on MiGA at: https://disc-genomics.uibk.ac.at/miga//projects/SourceApp
-
 The default database for running SourceApp is available on Zenodo and formatted for immediate use.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12795076.svg)](https://doi.org/10.5281/zenodo.12795076)
+
+An easy-to-browse version of the default SourceApp database has also been hosted on MiGA at: https://disc-genomics.uibk.ac.at/miga//projects/SourceApp
 
 # Metagenomic Benchmarking Dataset
 
