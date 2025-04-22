@@ -79,10 +79,10 @@ options:
                         from sourceapp_build.py
   -l , --limit-threshold 
                         Sequence breadth needed to consider a genome detected. Increasing this value will increase false negative rate. Decreasing this value will
-                        increase false positive rate (float; default 0.1)
+                        increase false positive rate (float; default 0)
   -f , --min-frac       The minimum read or cell fraction a source must have to be considered detected and therefore apportionable (float; default 0.0001)
   -r , --percent-identity 
-                        Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.95)
+                        Minimum BLAST-like percent identity of alignment between read and reference genome (float; default 0.93)
   -q , --query-coverage 
                         Minimum fraction of read covered by an alignment between read and reference genome (float; default 0.7)
   -t , --threads        Threads available to SourceApp
