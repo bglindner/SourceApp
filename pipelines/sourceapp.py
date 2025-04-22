@@ -233,10 +233,10 @@ def main():
         )
     parser.add_argument(
         '-l', '--limit-threshold',
-        help='Sequence breadth needed to consider a genome detected (default=0.1)',
+        help='Sequence breadth needed to consider a genome detected (default=0)',
         metavar='',
         type=float,
-        default=0.1,
+        default=0,
         required=False
         )
     parser.add_argument(
@@ -249,10 +249,10 @@ def main():
         )
     parser.add_argument(
         '-r', '--percent-identity',
-        help='Minimum BLAST-like percent identity to count an alignment (float; default 0.95)',
+        help='Minimum BLAST-like percent identity to count an alignment (float; default 0.93)',
         metavar='',
         type=float,
-        default=0.95,
+        default=0.93,
         required=False
         )
     parser.add_argument(
