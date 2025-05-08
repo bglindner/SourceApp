@@ -7,7 +7,7 @@
 
 Python implementation of the Unix-based environmental monitoring tool.
 
-SourceApp is currently under review but we encourage interested users to give it a try ahead of publication.
+Now in print at ES&T: https://pubs.acs.org/doi/full/10.1021/acs.est.5c03603
 
 # Description 
 SourceApp is a bioinformatic workflow designed to apportion fecal signal amongst multiple competing sources in short read metagenomes collected from impaired waterways. SourceApp was developed for use on Unix or Unix-like operating systems and its implementation in Python has the same requirement.
@@ -238,7 +238,6 @@ An easy-to-browse version of the default SourceApp database has also been hosted
 
 Spike-in mesocosms were constructed for benchmarking the performance of SourceApp in simulated fecal contamination events. This data can be found in two different BioProjects at NCBI: PRJNA1092107 (spike-in slurries) and PRJNA1161616 (mesocosms). These data are fully described in the SourceApp publication and are available for users to benchmark SourceApp's performance with their own genome databases or reproduce the results we report.
 
-Note: this data is still embargo'd but will be available soon!
 
 # Citations
 
