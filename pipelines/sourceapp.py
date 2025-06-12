@@ -213,28 +213,24 @@ def main():
     parser.add_argument(
         '-i', '--input-files',
         help='Comma-delimited path to forward and reverse metagenomic reads. Must be in FASTQ format and compressed with gzip',
-        metavar='',
         type=str, 
         required=True
         )
     parser.add_argument(
         '-o', '--output-dir',
         help='Path to the desired output directory',
-        metavar='',
         type=str,
         required=True
         )
     parser.add_argument(
         '-d', '--sourceapp-database',
         help='Path to directory containing a SourceApp formatted database',
-        metavar='',
         type=str,
         required=True
         )
     parser.add_argument(
         '-l', '--limit-threshold',
         help='Sequence breadth needed to consider a genome detected (default=0)',
-        metavar='',
         type=float,
         default=0,
         required=False
@@ -242,7 +238,6 @@ def main():
     parser.add_argument(
         '-f', '--min-frac',
         help='The minimum read or cell fraction a source must have to detectable and apportionable (default=0.0001)',
-        metavar='',
         type=float,
         default=0.0001,
         required=False
@@ -250,7 +245,6 @@ def main():
     parser.add_argument(
         '-r', '--percent-identity',
         help='Minimum BLAST-like percent identity to count an alignment (float; default 0.93)',
-        metavar='',
         type=float,
         default=0.93,
         required=False
@@ -258,7 +252,6 @@ def main():
     parser.add_argument(
         '-q', '--query-coverage',
         help='Minimum fraction of read covered by an alignment between (float; default 0.7)',
-        metavar='',
         type=float,
         default=0.7,
         required=False
@@ -266,7 +259,6 @@ def main():
     parser.add_argument(
         '-t','--threads',
         help='Threads available to SourceApp',
-        metavar='',
         type=int,
         default=1,
         required=False
